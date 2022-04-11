@@ -1,0 +1,69 @@
+html {
+    background-color: #585b5d;
+}
+
+#formDiv {
+    display: flex;
+}
+
+.settingsForm {
+    width: 33%;
+    min-width: 245px;
+    display: flex;
+    flex-wrap: wrap;
+    margin: auto;
+    padding: 1em;
+    background-color: white;
+    font-weight: bold;
+    justify-content: center;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.textInput {
+    padding: 0;
+    font-size: 24px;
+    margin-top: 1ch;
+    margin-bottom: 1ch;
+    width: 100%;
+}
+
+.row {
+    width: 100%;
+    padding: 1ch;
+}
+
+#dbcFileInput {
+    margin: 1em;
+}
+
+.dataTable {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 1em;
+}
+
+.dataTable td,
+th {
+    border: 1px solid #dddddd;
+    background: white;
+    text-align: left;
+    padding: 8px;
+    width: 25%;
+}
+
+.datatable th {
+    background-color: grey;
+}
+
+.activeFile {
+    background-color: rgb(18, 212, 0)!important;
+}
+
+.notActiveFile {
+    background-color: rgb(175, 0, 0)!important;
+}
+
+.notActiveFile:hover {
+    cursor: pointer;
+}

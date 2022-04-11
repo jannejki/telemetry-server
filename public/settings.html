@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Telemetry</title>
+    <link href="/CSS/navBar.css" rel="stylesheet">
+    <link href="/CSS/settings.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div id="navbar">
+        <img id="logo" src="images/logo.svg" />
+        <h1>Telemetry server</h1>
+        <div id="debugSwitch">
+            <label class="label">Debug</label>
+            <label class="switch">
+            <input type="checkbox" id="debug">
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <div id="carStatus" class="">
+            <p></p>
+        </div>
+        <div class="dropdown">
+            <button class="dropbtn">Menu 
+          <i class="fa fa-caret-down"></i>
+        </button>
+            <div class="dropdown-content">
+                <a href="/">Dashboard</a>
+                <a href="live">Live</a>
+                <a href="history">History</a>
+                <a href="converter">Converter</a>
+                <a href="settings">Settings</a>
+                <a href="logout?_method=DELETE">Log out</a>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <div id="formDiv">
+
+            <form action="/uploadDBC" method="POST" enctype="multipart/form-data" id="newDBCFileForm" class="settingsForm">
+                <div class="row">
+                    <label for="canID">Upload file:</label><br>
+                    <input type="file" name="dbcFile" id="dbcFileInput" required>
+                </div>
+                <input type="submit">
+            </form>
+        </div>
+        <table id="fileTable" class="dataTable">
+            <tr>
+                <th>Name</th>
+                <th>Delete</th>
+            </tr>
+        </table>
+
+        <!-- is this useless? 19.1.2022 -->
+        <table id="canTable" class="dataTable">
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+            </tr>
+        </table>
+        -
+    </main>
+    <script src="javascript/navBar.js"></script>
+    <script src="javascript/settings.js"></script>
+</body>
+
+</html>

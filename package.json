@@ -1,0 +1,23 @@
+{
+    "name": "telemetry-server",
+    "version": "1.0.0",
+    "description": "Telemetry server for Metropolia Motorsport",
+    "main": "app.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/jannejki/telemetry-server.git"
+    },
+    "keywords": [
+        "telemetry",
+        "node.js"
+    ],
+    "author": "JKi",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/jannejki/telemetry-server/issues"
+    },
+    "homepage": "https://github.com/jannejki/telemetry-server#readme"
+}

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Telemetry</title>
+    <link href="/CSS/navBar.css" rel="stylesheet">
+    <link href="/CSS/converter.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="navbar">
+        <img id="logo" src="images/logo.svg" />
+        <h1>Telemetry server</h1>
+        <div id="debugSwitch">
+            <label class="label">Debug</label>
+            <label class="switch">
+            <input type="checkbox" id="debug">
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <div id="carStatus" class="">
+            <p></p>
+        </div>
+
+        <div class="dropdown">
+            <button class="dropbtn">Menu 
+          <i class="fa fa-caret-down"></i>
+        </button>
+            <div class="dropdown-content">
+                <a href="/">Dashboard</a>
+                <a href="live">Live</a>
+                <a href="history">History</a>
+                <a href="converter">Converter</a>
+                <a href="settings">Settings</a>
+                <a href="/logout?_method=DELETE">Log out</a>
+            </div>
+        </div>
+    </div>
+    <main>
+        <form id="convertForm">
+            <div>
+                <label for="nodes">CAN node:</label><br>
+                <select name="can" id="canList" class="input">
+            </select>
+            </div>
+            <div>
+                <label for="hexInput">Hex string:</label><br>
+                <input type="text" name="hex" id="hexInput" class="input" required>
+            </div>
+            <input type="submit" class="input">
+        </form>
+
+        <table id="valueTable">
+            <tr>
+                <th>Name</th>
+                <th>Value</th>
+                <th>Unit</th>
+            </tr>
+        </table>
+    </main>
+    <script src="javascript/navBar.js"></script>
+    <script src="javascript/converter.js"></script>
+</body>
+
+</html>
