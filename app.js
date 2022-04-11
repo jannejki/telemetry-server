@@ -19,7 +19,6 @@ const port = 3000;
         } else {
             throw new Error('db not connected');
         }
-
         const app = express();
         app.set('view engine', 'ejs');
 

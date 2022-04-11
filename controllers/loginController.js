@@ -1,7 +1,8 @@
 'user strict';
 import passport from 'passport';
-import bcrypt from 'bcrypt';
-import User from '../models/userModel';
+
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+//import createNewUser from process.env.NEWUSER;
 
 const loginPage = async(req, res) => {
     console.log('loginPage');
@@ -22,15 +23,13 @@ const newUser = async(req, res) => {
 }
 
 const addNewUser = async(req, res) => {
-    console.log('addNewUser', req.body);
 
-    bcrypt.hash(req.body.password, process.env.SALT, function(err, hash) {
-        const newUser = new User({ username: req.body.username, password: hash });
-        newUser.save();
-
-    });
-
-    res.sendStatus(200);
+    if (process.env.NODE_ENV === 'production') {
+        res.sendStatus(401);
+    } else {
+        (async() => (await
+            import ('../utils/newUser.js')).default(req.body))();
+    }
 }
 
 const logout = async(req, res) => {
