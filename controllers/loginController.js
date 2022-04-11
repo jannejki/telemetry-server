@@ -23,7 +23,6 @@ const newUser = async(req, res) => {
 }
 
 const addNewUser = async(req, res) => {
-
     if (process.env.NODE_ENV === 'production') {
         res.sendStatus(401);
     } else {

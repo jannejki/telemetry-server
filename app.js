@@ -11,6 +11,21 @@ import path from 'path';
 dotenv.config();
 
 const port = 3000;
+
+const app = express();
+app.set('view engine', 'ejs');
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(bodyParser.raw());
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/login', loginRoute);
+app.use('/', webRoute);
+
+app.listen(port, () => { console.log(`app listen on port ${port}`); });
+
+/*
 (async() => {
     try {
         const conn = await connectMongo();
@@ -35,4 +50,4 @@ const port = 3000;
     } catch (e) {
         console.log('server error: ' + e.message);
     }
-})();
+})();*/
