@@ -102,3 +102,7 @@ dist
 
 # TernJS port file
 .tern-port
+db/telemetry.db
+db/dbcFiles
+db/dbcFiles
+db/dbcFiles
