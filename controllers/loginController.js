@@ -2,7 +2,6 @@
 import passport from 'passport';
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-//import createNewUser from process.env.NEWUSER;
 
 const loginPage = async(req, res) => {
     console.log('loginPage');
