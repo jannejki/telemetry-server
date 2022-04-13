@@ -12,6 +12,7 @@ dotenv.config();
 
 const port = 3000;
 
+/*
 const app = express();
 app.set('view engine', 'ejs');
 
@@ -23,9 +24,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/login', loginRoute);
 app.use('/', webRoute);
 
-app.listen(port, () => { console.log(`app listen on port ${port}`); });
+app.listen(port, () => { console.log(`app listen on port ${port}`); });*/
 
-/*
+
 (async() => {
     try {
         const conn = await connectMongo();
@@ -50,4 +51,4 @@ app.listen(port, () => { console.log(`app listen on port ${port}`); });
     } catch (e) {
         console.log('server error: ' + e.message);
     }
-})();*/
+})();
