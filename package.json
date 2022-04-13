@@ -33,6 +33,5 @@
         "mqtt": "^4.3.7",
         "multer": "^1.4.4",
         "passport": "^0.5.2"
-    },
-    "type": "module"
+    }
 }
