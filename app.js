@@ -7,6 +7,9 @@ import connectMongo from './db/db.js';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import path from 'path';
+import passport from 'passport';
+import flash from 'express-flash';
+import session from 'express-session';
 
 dotenv.config();
 
@@ -41,6 +44,14 @@ app.listen(port, () => { console.log(`app listen on port ${port}`); });
         app.use(bodyParser.urlencoded({ extended: true }));
         app.use(bodyParser.json());
         app.use(bodyParser.raw());
+        app.use(flash())
+        app.use(session({
+            secret: process.env.SESSION_SECRET,
+            resave: false,
+            saveUninitialized: false
+        }))
+        app.use(passport.initialize())
+        app.use(passport.session())
         app.use(express.static(path.join(__dirname, 'public')));
 
         app.use('/login', loginRoute);

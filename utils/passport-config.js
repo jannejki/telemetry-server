@@ -2,6 +2,7 @@ const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcrypt')
 
 function initialize(passport, getUserByName, getUserById) {
+    console.log('passport-config');
     const authenticateUser = async(username, password, done) => {
         const user = await getUserByName(username)
 

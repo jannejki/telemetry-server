@@ -36,4 +36,13 @@ const logout = async(req, res) => {
     res.redirect('/');
 }
 
-export { loginPage, loginCredentials, newUser, logout, addNewUser }
+const checkAuthenticated = (req, res, next) => {
+    console.log('checkAuthenticated', req.isAuthenticated());
+    if (req.isAuthenticated()) {
+        return next();
+    }
+
+    res.redirect('/login');
+}
+
+export { loginPage, loginCredentials, newUser, logout, addNewUser, checkAuthenticated }
