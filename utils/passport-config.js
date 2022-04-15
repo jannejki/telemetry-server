@@ -23,7 +23,6 @@ const localStrategy = async(username, password, done) => {
     }
 }
 
-
 const serialize = (user, done) => {
     return done(null, user);
 };
