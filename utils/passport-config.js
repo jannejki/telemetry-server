@@ -1,34 +1,35 @@
-const LocalStrategy = require('passport-local').Strategy
-const bcrypt = require('bcrypt')
+import User from '../models/userModel';
+import bcrypt from 'bcrypt';
 
-function initialize(passport, getUserByName, getUserById) {
-    console.log('passport-config');
-    const authenticateUser = async(username, password, done) => {
-        const user = await getUserByName(username)
+const localStrategy = async(username, password, done) => {
+    console.log('localStrategy');
+    const users = await User.find({ username: username });
 
-        if (user == null) {
-            return done(null, false, { message: 'Wrong password or username' })
-        }
-
-        try {
-            if (await bcrypt.compare(password, user.password)) {
-                return done(null, user)
-            } else {
-                return done(null, false, { message: 'Wrong password or username' })
-            }
-        } catch (e) {
-            return done(e)
-        }
+    if (users.length == 0) {
+        console.log('no user');
+        return done(null, false, { message: 'no user found!' });
     }
 
-    passport.use(new LocalStrategy({ usernameField: 'username' },
-        authenticateUser))
-
-    passport.serializeUser((user, done) => done(null, user))
-
-    passport.deserializeUser((id, done) => {
-        return done(null, getUserById(id))
-    })
+    try {
+        if (await bcrypt.compare(password, users[0].password)) {
+            console.log('user found!');
+            return done(null, users[0]);
+        } else {
+            console.log('no users found')
+            return done(null, false, { message: 'Wrong password' })
+        }
+    } catch (e) {
+        return done(e);
+    }
 }
 
-module.exports = initialize
+
+const serialize = (user, done) => {
+    return done(null, user);
+};
+
+const deserialize = (async(id, done) => {
+    return done(null, await User.findById(id._id));
+})
+
+export { localStrategy, serialize, deserialize }

@@ -1,5 +1,4 @@
 'user strict';
-import passport from 'passport';
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
@@ -37,12 +36,11 @@ const logout = async(req, res) => {
 }
 
 const checkAuthenticated = (req, res, next) => {
-    console.log('checkAuthenticated', req.isAuthenticated());
     if (req.isAuthenticated()) {
         return next();
     }
-
     res.redirect('/login');
 }
+
 
 export { loginPage, loginCredentials, newUser, logout, addNewUser, checkAuthenticated }

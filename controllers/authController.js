@@ -1,6 +1,5 @@
 'use strict';
 import jwt from 'jsonwebtoken';
-import passport from '../utils/pass.js';
 
 const login = (req, res) => {
     passport.authenticate('local', { session: false }, (err, user, info) => {
@@ -21,6 +20,7 @@ const login = (req, res) => {
 
     })(req, res);
 };
+
 
 const logout = (req, res) => {
     req.logout();
