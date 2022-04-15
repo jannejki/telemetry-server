@@ -1,9 +1,14 @@
 'user strict';
+import createNewUser from '../utils/newUser.js';
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 const loginPage = async(req, res) => {
     console.log('loginPage');
-    res.render('login.ejs')
+    if (req.isAuthenticated()) {
+        res.redirect('/');
+    } else {
+        res.render('login.ejs')
+    }
 }
 
 const loginCredentials = async(req, res) => {
@@ -20,16 +25,12 @@ const newUser = async(req, res) => {
 }
 
 const addNewUser = async(req, res) => {
-    console.log('env:', process.env.NODE_ENV);
-    if (process.env.NODE_ENV === 'production') {
-        res.sendStatus(401);
-    } else {
-        try {
-            (async() => (await
-                import ('../utils/newUser.js')).default(req.body))();
-        } catch (err) {
-            console.log('addNewUser', err);
-        }
+    try {
+        await createNewUser(req.body);
+        res.sendStatus(200);
+    } catch (err) {
+        console.log('addNewUser', err);
+        res.sendStatus(500);
     }
 }
 
@@ -46,5 +47,12 @@ const checkAuthenticated = (req, res, next) => {
     res.redirect('/login');
 }
 
+const checkAuthorized = (req, res, next) => {
+    if (req.isAuthenticated() && req.user.rights) {
+        return next();
+    } else {
+        res.sendStatus(401);
+    }
+}
 
-export { loginPage, loginCredentials, newUser, logout, addNewUser, checkAuthenticated }
+export { loginPage, loginCredentials, newUser, logout, addNewUser, checkAuthenticated, checkAuthorized }
