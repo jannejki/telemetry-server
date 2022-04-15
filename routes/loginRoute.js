@@ -18,10 +18,10 @@ router.post('/', passport.authenticate('local', {
 }));
 
 router.get('/', loginPage);
-//router.get('/newUser', checkAuthorized, newUser);
-router.get('/newUser', newUser);
-//router.post('/newUser', checkAuthorized, addNewUser);
-router.post('/newUser', addNewUser);
+router.get('/newUser', checkAuthorized, newUser);
+router.post('/newUser', checkAuthorized, addNewUser);
+//router.get('/newUser', newUser);
+//router.post('/newUser', addNewUser);
 router.get('/logout', logout);
 
 export default router;
