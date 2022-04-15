@@ -11,7 +11,6 @@ import flash from 'express-flash';
 import session from 'express-session';
 import passport from 'passport';
 
-
 dotenv.config();
 
 const port = 3000;
@@ -24,9 +23,11 @@ const port = 3000;
         } else {
             throw new Error('db not connected');
         }
+
         const app = express();
         app.set('view engine', 'ejs');
 
+        app.use(express.static(path.join(__dirname, 'public')));
         app.use(bodyParser.urlencoded({ extended: true }));
         app.use(bodyParser.json());
         app.use(bodyParser.raw());
@@ -39,15 +40,10 @@ const port = 3000;
         }))
         app.use(passport.session())
 
-
-
-        app.use(express.static(path.join(__dirname, 'public')));
-
         app.use('/login', loginRoute);
         app.use('/', webRoute);
 
         app.listen(port, () => { console.log(`app listen on port ${port}`); });
-
     } catch (e) {
         console.log('server error: ' + e.message);
     }

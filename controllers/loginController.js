@@ -1,5 +1,4 @@
 'user strict';
-
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 const loginPage = async(req, res) => {
@@ -21,11 +20,16 @@ const newUser = async(req, res) => {
 }
 
 const addNewUser = async(req, res) => {
+    console.log('env:', process.env.NODE_ENV);
     if (process.env.NODE_ENV === 'production') {
         res.sendStatus(401);
     } else {
-        (async() => (await
-            import ('../utils/newUser.js')).default(req.body))();
+        try {
+            (async() => (await
+                import ('../utils/newUser.js')).default(req.body))();
+        } catch (err) {
+            console.log('addNewUser', err);
+        }
     }
 }
 
