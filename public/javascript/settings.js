@@ -14,7 +14,7 @@ async function deleteDbcFile(filename) {
     if (!confirm("Are you sure?")) return;
 
     // sends request to server to delete the file
-    await fetch('/deleteFile', {
+    await fetch('/settings/deleteDbcFile', {
             method: 'delete',
             headers: {
                 'Content-Type': 'application/json'
@@ -34,7 +34,7 @@ async function deleteDbcFile(filename) {
  * @param {*} filename dbc file
  */
 async function downloadDbcFile(filename) {
-    await fetch('/downloadDbcFile/?filename=' + filename, {
+    await fetch('/settings/downloadDbcFile/?filename=' + filename, {
         method: 'get',
         headers: {
             'Content-Type': 'application/json'
@@ -76,7 +76,7 @@ function refreshFileTable() {
     table.appendChild(tr);
 
     // Sends request to server to get all the dbc files
-    fetch('/loadDbcFiles')
+    fetch('settings/getDbcFiles')
         .then(response => response.json())
         .then((data) => {
             // creating new row for every file
@@ -87,27 +87,24 @@ function refreshFileTable() {
                 nametd.innerText = data.files[i].filename;
 
                 let deletetd = document.createElement("td");
-                let deleteButton = document.createElement("button");
-                deleteButton.setAttribute("value", "delete");
-                deleteButton.setAttribute("class", "deleteCan");
-                deleteButton.setAttribute("id", data.files[i].filename);
-                deleteButton.setAttribute("onclick", "deleteDbcFile(this.id)");
-                deleteButton.innerHTML = "Delete file";
+                //fixme disable button when (data.files[i].using == true)
+                deletetd.innerHTML = `<button
+                                            value="delete" 
+                                            class="deleteCan" 
+                                            id="${data.files[i].filename}"
+                                            onclick="deleteDbcFile(this.id)">
+                                            Delete file
+                                        </button>`;
 
-                // if file is in use, disable deleteButton
-                if (data.files[i].using) deleteButton.disabled = true;
-                deletetd.appendChild(deleteButton);
 
                 // creating download button to download the file
                 let downloadTd = document.createElement("td");
-                let downloadButton = document.createElement("button");
-                downloadButton.setAttribute("value", "download");
-                downloadButton.setAttribute("class", "deleteCan");
-                downloadButton.setAttribute("id", data.files[i].filename);
-                downloadButton.setAttribute("onclick", "downloadDbcFile(this.id)");
-                downloadButton.innerHTML = "Download file";
-                downloadButton.disabled = true;
-                downloadTd.appendChild(downloadButton);
+                downloadTd.innerHTML = `<button
+                                            value="download"
+                                            id="${data.files[i].filename}"
+                                            onclick="downloadDbcFile(this.id)">
+                                            Download file
+                                        </button>`;
 
                 // creating cell to see if file is in use
                 let inUseTd = document.createElement("td");
@@ -143,7 +140,7 @@ function refreshFileTable() {
  */
 function changeDbcFile(filename) {
     // sends request to server to change active file
-    fetch('/changeDbcFile/?filename=' + filename)
+    fetch('/settings/changeDbcFile/?filename=' + filename)
         .then(response => {
             // if everything went ok, refresh tables
             if (response.status === 204) {
@@ -176,7 +173,7 @@ function refreshCanTable() {
     table.appendChild(tr);
 
     // send request to get the can names and ids from the active dbc file
-    fetch('/loadCans')
+    fetch('/settings/loadCanList')
         .then(response => response.json())
         .then((data) => {
 

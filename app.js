@@ -3,6 +3,7 @@
 import express from 'express';
 import loginRoute from './routes/loginRoute.js';
 import webRoute from './routes/webRoute.js';
+import settingsRoute from './routes/settingsRoute.js';
 import connectMongo from './db/db.js';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
@@ -42,6 +43,7 @@ const port = 3000;
 
         app.use('/login', loginRoute);
         app.use('/', webRoute);
+        app.use('/settings', settingsRoute);
 
         app.listen(port, () => { console.log(`app listen on port ${port}`); });
     } catch (e) {

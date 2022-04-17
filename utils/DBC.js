@@ -1,7 +1,6 @@
 const fs = require('fs')
 
-exports.DbcParser = function() {
-
+const DbcParser = function() {
     this.dbcFile;
     this.dbcFileName;
 
@@ -10,10 +9,10 @@ exports.DbcParser = function() {
      * @param {string} dbcFile Name of the DBC file that is used.
      */
     this.loadDbcFile = (dbcFile) => {
-        fs.readFile('./db/dbcFiles/' + dbcFile, 'utf8', async(err, data) => {
+        fs.readFile('db/dbcFiles/' + dbcFile, 'utf8', async(err, data) => {
             if (err) {
-                console.error(err)
-                return
+                console.error('loadDbcFile: ', err);
+                return;
             }
             this.dbcFile = data;
             this.dbcFileName = dbcFile;
@@ -415,3 +414,5 @@ exports.DbcParser = function() {
         return i;
     }
 }
+
+export default DbcParser;
