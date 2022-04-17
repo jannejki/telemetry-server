@@ -36,16 +36,19 @@ const saveFile = (req, res, next) => {
 
 const loadFileNames = async(req, res) => {
     fs.readdir(path.join(__dirname, '../db/dbcFiles'), function(err, files) {
-        let fileArray = [];
-
         //handling error
         if (err) {
             return console.log('Unable to scan directory: ' + err);
         }
+        const fileArray = [];
+
         //listing all files using forEach
         files.forEach(function(file) {
-            fileArray.push({ filename: file, using: file == dbcParser.dbcFileName });
+            if (path.extname(file) == '.dbc') {
+                fileArray.push({ filename: file, using: file == dbcParser.dbcFileName });
+            }
         });
+
         res.send({ files: fileArray }).status(204);
     });
 }
