@@ -1,6 +1,7 @@
 'use strict';
 import mqtt from 'mqtt';
-import { parseMessage } from './DBC';
+import { parseMessage, calculateValue } from './DBC';
+import Data from '../models/dataModel';
 
 const mqttServer = '127.0.0.1:1883';
 const clientId = 'server';
@@ -18,16 +19,17 @@ client.subscribe("messages");
 // receive MQTT messages
 client.on('message', async function(topic, message, packet) {
     try {
-        const test = message.toString();
-        const rawData = parseMessage(test);
-        //sendLiveData(rawData);
-        //saveData(rawData);
-        //sendDebugMessage({ error: null, received: message.toString('hex') });
-        console.log(rawData);
+        const rawData = parseMessage(message.toString());
+        const calculatedValues = rawData.map(canData => calculateValue(canData));
+
+        // TODO: send calculatedValues to client via websocket
+
+        await Data.create(rawData);
+
     } catch (error) {
         console.log("message is corrupted!");
         console.log(error);
-        //   sendDebugMessage({ error: error, received: message.toString('hex') });
+        // sendDebugMessage({ error: error, received: message.toString('hex') });
     }
 });
 

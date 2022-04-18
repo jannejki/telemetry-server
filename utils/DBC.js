@@ -171,8 +171,13 @@ const decToHex = (src) => {
     return returnString;
 };
 
-
+/**
+ * 
+ * @param {canID:string, data: String} message 
+ * @returns 
+ */
 const calculateValue = (message) => {
+    console.log('calculateValue:', message);
     const rules = getDecodingRules(message.canID);
     let valueArray = [];
 
@@ -213,8 +218,8 @@ const calculateValue = (message) => {
 
         // create binaryString from the bytes
         let readyBinaryString = "";
-        for (byte in byteArray) {
-            for (bit in byteArray[byte]) {
+        for (let byte in byteArray) {
+            for (let bit in byteArray[byte]) {
                 readyBinaryString = readyBinaryString + byteArray[byte][bit].toString();
             }
         }
@@ -226,7 +231,7 @@ const calculateValue = (message) => {
         let value = parseFloat(rule.offset) + parseFloat(rule.scale) * rawValue;
 
         // push calculated value to array
-        valueArray.push({ canID: message.canID, name: rule.name, data: value, unit: rule.unit, min: rule.min, max: rule.max, time: message.timestamp })
+        valueArray.push({ canID: message.canID, name: rule.name, data: value, unit: rule.unit, min: rule.min, max: rule.max })
     })
     return valueArray;
 }
