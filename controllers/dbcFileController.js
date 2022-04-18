@@ -3,10 +3,10 @@
 import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
-import DBCparser from '../utils/DBC.js';
+import { loadDbcFile, getCanNames, getActiveFileName, calculateValue } from '../utils/DBC.js';
 
-const dbcParser = new DBCparser();
-dbcParser.loadDbcFile('CAN0 (1).dbc');
+
+loadDbcFile('CAN0.dbc');
 
 
 // FIXME: upload files here
@@ -45,7 +45,7 @@ const loadFileNames = async(req, res) => {
         //listing all files using forEach
         files.forEach(function(file) {
             if (path.extname(file) == '.dbc') {
-                fileArray.push({ filename: file, using: file == dbcParser.dbcFileName });
+                fileArray.push({ filename: file, using: file == getActiveFileName() });
             }
         });
 
@@ -56,11 +56,8 @@ const loadFileNames = async(req, res) => {
 const changeActiveFile = async(req, res) => {
     const fileName = req.query.filename;
     try {
-        // lets the dbcParser to load file to use
-        dbcParser.loadDbcFile(fileName);
-
-        // changes from database the active file. This is for the server to know what was the last 
-        // file that was in use before restarting the server
+        console.log('changeActiveFile', fileName);
+        await loadDbcFile(fileName);
 
         // FIXME: save active dbc filename to database 
         // await db("activeSettings").where({ name: "dbcFile" }).update({ status: fileName });
@@ -71,7 +68,7 @@ const changeActiveFile = async(req, res) => {
 }
 
 const loadCanList = (req, res) => {
-    res.send({ canList: dbcParser.getCanNames() }).status(204);
+    res.send({ canList: getCanNames() }).status(204);
 }
 
 const deleteDbcFile = (req, res) => {
@@ -85,6 +82,7 @@ const deleteDbcFile = (req, res) => {
     }
 }
 
+// FIXME: not working yet
 const downloadDbcFile = (req, res) => {
     var filePath = "db/dbcFiles/" + req.query.filename; // Or format the path using the `id` rest param
     var fileName = req.query.filename; // The default name the browser will use
@@ -97,7 +95,7 @@ const downloadDbcFile = (req, res) => {
             // so check res.headersSent
         } else {
             // decrement a download credit, etc.
-            console.log('toimii');
+            console.log('no errors');
         }
     })
 }

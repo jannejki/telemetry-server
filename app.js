@@ -11,6 +11,7 @@ import path from 'path';
 import flash from 'express-flash';
 import session from 'express-session';
 import passport from 'passport';
+import mqtt from './utils/mqtt';
 
 dotenv.config();
 
