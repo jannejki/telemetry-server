@@ -4,15 +4,22 @@ let dbcFile;
 let dbcFileName;
 
 const loadDbcFile = (wantedDbcFile) => {
-    fs.readFile('db/dbcFiles/' + wantedDbcFile, 'utf8', async(err, data) => {
-        if (err) {
-            console.error('loadDbcFile: ', err);
-            return;
-        }
-        dbcFile = data;
-        dbcFileName = wantedDbcFile;
-        console.log("dbcFile in use: ", dbcFileName);
-    });
+    return new Promise((resolve) => {
+        fs.readFile('db/dbcFiles/' + wantedDbcFile, 'utf8', async(err, data) => {
+            try {
+                if (err) {
+                    throw err;
+                }
+
+                dbcFile = data;
+                dbcFileName = wantedDbcFile;
+                resolve({ activeDbc: dbcFileName });
+            } catch (err) {
+                resolve({ error: err });
+            }
+        });
+    })
+
 }
 
 const getActiveFileName = () => {
