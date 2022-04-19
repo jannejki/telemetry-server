@@ -20,7 +20,7 @@ window.onload = () => {
     document.getElementById("hourEnd").value = hr + ":" + min;
 
     // load CAN names and IDs from server to fill dropdown -list
-    fetch('/loadCans')
+    fetch('/settings/loadCanList')
         .then(response => response.json())
         .then((data) => {
             for (let i = 0; i < data.canList.length; i++) {

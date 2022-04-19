@@ -1,5 +1,5 @@
 window.onload = () => {
-    fetch('loadCans')
+    fetch('/settings/loadCanList')
         .then(response => response.json())
         .then(data => fillDropDown(data.canList));
 }
@@ -38,7 +38,7 @@ document.forms['convertForm'].addEventListener('submit', async(event) => {
  */
 function calculateValue(node, hex) {
     return new Promise(resolve => {
-        fetch('calculateValue/?canID=' + node + "&data=" + hex)
+        fetch('/data/calculateValue/?canID=' + node + "&data=" + hex)
             .then(response => {
                 if (response.status === 500) {
                     alert("Something went wrong!");

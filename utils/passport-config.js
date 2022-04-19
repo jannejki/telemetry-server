@@ -2,7 +2,6 @@ import User from '../models/userModel';
 import bcrypt from 'bcrypt';
 
 const localStrategy = async(username, password, done) => {
-    console.log('localStrategy');
     const users = await User.find({ username: username });
 
     if (users.length == 0) {
@@ -12,7 +11,6 @@ const localStrategy = async(username, password, done) => {
 
     try {
         if (await bcrypt.compare(password, users[0].password)) {
-            console.log('user found!');
             return done(null, users[0]);
         } else {
             console.log('no users found')

@@ -215,7 +215,7 @@ const calculateValue = (message) => {
     console.log('calculateValue:', message);
     const rules = getDecodingRules(message.canID);
     let valueArray = [];
-
+    //FIXME create better way to handle errors
     if (rules.error) {
         return rules;
     }

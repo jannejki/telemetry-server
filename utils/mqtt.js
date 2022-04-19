@@ -2,6 +2,7 @@
 import mqtt from 'mqtt';
 import { parseMessage, calculateValue } from './DBC';
 import Data from '../models/dataModel';
+import { sendLiveData } from './websocket';
 
 const mqttServer = '127.0.0.1:1883';
 const clientId = 'server';
@@ -23,7 +24,7 @@ client.on('message', async function(topic, message, packet) {
         const calculatedValues = rawData.map(canData => calculateValue(canData));
 
         // TODO: send calculatedValues to client via websocket
-
+        sendLiveData(calculatedValues);
         await Data.create(rawData);
 
     } catch (error) {

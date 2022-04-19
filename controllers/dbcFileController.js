@@ -59,7 +59,6 @@ const loadFileNames = async(req, res) => {
                 fileArray.push({ filename: file, using: file == getActiveFileName() });
             }
         });
-
         res.send({ files: fileArray }).status(204);
     });
 }
@@ -69,8 +68,10 @@ const changeActiveFile = async(req, res) => {
     try {
         const activeFile = await loadDbcFile(fileName);
         if (activeFile.error) throw activeFile.error;
-        await Settings.findByIdAndUpdate(activeFileId, { activeDbc: activeFile.dbcFileName });
+
+        await Settings.findByIdAndUpdate(activeFileId, { activeDbc: activeFile.activeDbc });
         res.sendStatus(204);
+
     } catch (error) {
         res.send(error).status(500);
     }

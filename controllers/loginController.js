@@ -3,7 +3,6 @@ import createNewUser from '../utils/newUser.js';
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 const loginPage = async(req, res) => {
-    console.log('loginPage');
     if (req.isAuthenticated()) {
         res.redirect('/');
     } else {
@@ -12,7 +11,6 @@ const loginPage = async(req, res) => {
 }
 
 const loginCredentials = async(req, res) => {
-    console.log('loginCred', req.body);
     passport.authenticate('local', {
         successRedirect: '/',
         failureRedirect: '/login',
@@ -41,10 +39,14 @@ const logout = async(req, res) => {
 }
 
 const checkAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated()) {
+    if (process.env.NODE_ENV == 'development') {
+        if (req.isAuthenticated()) {
+            return next();
+        }
+        res.redirect('/login');
+    } else {
         return next();
     }
-    res.redirect('/login');
 }
 
 const checkAuthorized = (req, res, next) => {

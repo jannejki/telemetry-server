@@ -5,19 +5,17 @@ let timeout;
 let carStatus = document.getElementById("carStatus");
 
 // Create WebSocket connection.
-//const socket = new WebSocket('ws://152.70.178.116:3000');
-const socket = new WebSocket('ws://localhost:3000');
+const socket = new WebSocket('ws://127.0.0.1:3000');
 
 // Connection opened
 socket.addEventListener('open', function(event) {
     console.log('Connected to WS Server')
 });
 
+socket.addEventListener('message', (event) => {
+    console.log(event.data);
+})
 
-/**
- * @function
- * @brief Changes car status -element class and text if car is online
- */
 socket.addEventListener('message', function(event) {
     let message = JSON.parse(event.data);
 

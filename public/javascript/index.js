@@ -39,7 +39,7 @@ function createCards(nodes) {
  */
 function getNodes() {
     return new Promise(resolve => {
-        fetch('/loadCans')
+        fetch('/settings/loadCanList')
             .then(response => response.json())
             .then((data) => {
                 resolve(data.canList);
