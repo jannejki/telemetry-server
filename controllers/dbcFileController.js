@@ -4,10 +4,21 @@ import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
 import { loadDbcFile, getCanNames, getActiveFileName, calculateValue } from '../utils/DBC.js';
+import Settings from '../models/settingsModel.js';
+
+const activeFileId = '625e5c7fd9444459f400f658';
 
 
-loadDbcFile('CAN0.dbc');
-
+(async() => {
+    const settings = await Settings.findById(activeFileId);
+    try {
+        const loadedFile = await loadDbcFile(settings.activeDbc);
+        if (loadedFile.error) throw loadedFile.error;
+        console.log('[dbcFileCtrl] Active dbc-file:', loadedFile);
+    } catch (err) {
+        console.log('[dbcFileCtr] ', err);
+    }
+})();
 
 // FIXME: upload files here
 /*
@@ -38,7 +49,7 @@ const loadFileNames = async(req, res) => {
     fs.readdir(path.join(__dirname, '../db/dbcFiles'), function(err, files) {
         //handling error
         if (err) {
-            return console.log('Unable to scan directory: ' + err);
+            return console.log('[dbcFileCtrl] Unable to scan directory: ' + err);
         }
         const fileArray = [];
 
@@ -56,11 +67,9 @@ const loadFileNames = async(req, res) => {
 const changeActiveFile = async(req, res) => {
     const fileName = req.query.filename;
     try {
-        console.log('changeActiveFile', fileName);
-        await loadDbcFile(fileName);
-
-        // FIXME: save active dbc filename to database 
-        // await db("activeSettings").where({ name: "dbcFile" }).update({ status: fileName });
+        const activeFile = await loadDbcFile(fileName);
+        if (activeFile.error) throw activeFile.error;
+        await Settings.findByIdAndUpdate(activeFileId, { activeDbc: activeFile.dbcFileName });
         res.sendStatus(204);
     } catch (error) {
         res.send(error).status(500);
