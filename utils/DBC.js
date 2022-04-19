@@ -3,6 +3,11 @@ import getTimestamp from './timestamp.js';
 let dbcFile;
 let dbcFileName;
 
+/**
+ * 
+ * @param {String} wantedDbcFile 
+ * @returns Name of the active dbcFile or { error } if not successful
+ */
 const loadDbcFile = (wantedDbcFile) => {
     return new Promise((resolve) => {
         fs.readFile('db/dbcFiles/' + wantedDbcFile, 'utf8', async(err, data) => {
@@ -22,10 +27,18 @@ const loadDbcFile = (wantedDbcFile) => {
 
 }
 
+/**
+ * 
+ * @returns {String} Name of the active dbc file
+ */
 const getActiveFileName = () => {
     return dbcFileName;
 }
 
+/**
+ * 
+ * @returns {array} CAN node names that are in the .dbc file
+ */
 const getCanNames = () => {
     console.log('getCanNames');
     let decodingRules = dbcFile.split("\nBO_ ");
@@ -50,7 +63,11 @@ const getCanNames = () => {
     return names;
 }
 
-
+/**
+ * 
+ * @param {String} src hexadecimal value
+ * @returns {String} binary value
+ */
 const hexToBin = (src) => {
     let mapping = {
         "0": "0000",
@@ -81,7 +98,11 @@ const hexToBin = (src) => {
     return returnString;
 }
 
-
+/**
+ * 
+ * @param {String} src Binary value
+ * @returns {String} Decimal value
+ */
 const binToDec = (src) => {
     let i;
     let n = 0;
@@ -95,7 +116,11 @@ const binToDec = (src) => {
     return returnNum;
 };
 
-
+/**
+ * 
+ * @param {String} src Binary value 
+ * @returns {String} Hexadecimal value
+ */
 const binToHex = (src) => {
     let mapping = {
         "0000": "0",
@@ -139,7 +164,10 @@ const binToHex = (src) => {
     return returnString;
 }
 
-
+/**
+ * @param {String} src Decimal value 
+ * @returns {String} Hexadecimal value
+ */
 const decToHex = (src) => {
     let mapping = {
         "0": "0",
@@ -180,8 +208,8 @@ const decToHex = (src) => {
 
 /**
  * 
- * @param {canID:string, data: String} message 
- * @returns 
+ * @param {{canID:String, data: String}} message Object that contains canID and data strings
+ * @returns {array.<{canID: String, name: String, data: Number, unit: String, min: String, max: String }>}
  */
 const calculateValue = (message) => {
     console.log('calculateValue:', message);
@@ -243,7 +271,11 @@ const calculateValue = (message) => {
     return valueArray;
 }
 
-
+/**
+ * @brief Gets decoding rules for selected CAN node from dbcFile
+ * @param {String} canID
+ * @returns {array<{ name: String, startBit: Number, length: Number, endian: Number, scale: Number, offset: Number, min: Number, max: Number, unit: Number }>}  
+ */
 const getDecodingRules = (canID) => {
     let index1, index2;
     let signalArray = [];
@@ -323,7 +355,11 @@ const getDecodingRules = (canID) => {
     }
 }
 
-
+/**
+ * @brief Splits hexadecimal messages to json objects that contains canID, message length and data in hexadecimal value.
+ * @param {String} message Hexadecimal string from car
+ * @returns Array of json objects
+ */
 const parseMessage = (message) => {
     const byteArray = [];
     const messageArray = [];
