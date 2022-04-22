@@ -1,4 +1,5 @@
 import fs from 'fs';
+import canNodeModel from '../models/canNodeModel.js';
 import getTimestamp from './timestamp.js';
 let dbcFile;
 let dbcFileName;
@@ -18,13 +19,25 @@ const loadDbcFile = (wantedDbcFile) => {
 
                 dbcFile = data;
                 dbcFileName = wantedDbcFile;
+                checkDatabase();
                 resolve({ activeDbc: dbcFileName });
             } catch (err) {
                 resolve({ error: err });
             }
         });
     })
+}
 
+/**
+ * @brief checks if can nodes are already stroed in database
+ */
+const checkDatabase = async() => {
+    const canNodes = getCanNames();
+    canNodes.forEach(async(node) => {
+        if (!await canNodeModel.findOne({ canID: node.canID })) {
+            await canNodeModel.create(node);
+        }
+    });
 }
 
 /**
@@ -40,7 +53,6 @@ const getActiveFileName = () => {
  * @returns {array} CAN node names that are in the .dbc file
  */
 const getCanNames = () => {
-    console.log('getCanNames');
     let decodingRules = dbcFile.split("\nBO_ ");
     decodingRules.splice(0, 1);
     for (let i = 0; i < decodingRules.length; i++) {

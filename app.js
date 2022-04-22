@@ -13,6 +13,10 @@ import session from 'express-session';
 import passport from 'passport';
 import mqtt from './utils/mqtt';
 import { startWs } from './utils/websocket.js';
+import { ApolloServer } from 'apollo-server-express';
+import typeDefs from './apollo/schemas/schemaIndex';
+import resolvers from './apollo/resolvers/resolverIndex';
+
 
 dotenv.config();
 
@@ -41,6 +45,14 @@ const port = 3000;
             saveUninitialized: false
         }))
         app.use(passport.session())
+
+        const apolloServer = new ApolloServer({
+            typeDefs,
+            resolvers,
+        });
+
+        await apolloServer.start();
+        apolloServer.applyMiddleware({ app });
 
         app.use('/login', loginRoute);
         app.use('/', webRoute);
