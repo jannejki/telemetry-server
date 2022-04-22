@@ -25,5 +25,9 @@ const sendLiveData = (parsedMessage) => {
     io.emit('live', { latestMessage: dataArray });
 }
 
+const sendDebugMessage = (msg) => {
+    io.emit('debug', { debug: { message: msg }, carStatus: true });
+}
 
-export { startWs, sendLiveData };
+
+export { startWs, sendLiveData, sendDebugMessage };
