@@ -211,9 +211,9 @@ const decToHex = (src) => {
  * @param {{canID:String, data: String}} message Object that contains canID and data strings
  * @returns {array.<{canID: String, name: String, data: Number, unit: String, min: String, max: String }>}
  */
-const calculateValue = (message) => {
-    console.log('calculateValue:', message);
+const hexDataToPhysicalData = (message) => {
     const rules = getDecodingRules(message.canID);
+
     let valueArray = [];
     //FIXME create better way to handle errors
     if (rules.error) {
@@ -396,4 +396,4 @@ const parseMessage = (message) => {
     }
 }
 
-export { parseMessage, calculateValue, getCanNames, loadDbcFile, getActiveFileName }
+export { parseMessage, hexDataToPhysicalData, getCanNames, loadDbcFile, getActiveFileName }

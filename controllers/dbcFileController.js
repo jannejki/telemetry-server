@@ -3,10 +3,10 @@
 import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
-import { loadDbcFile, getCanNames, getActiveFileName, calculateValue } from '../utils/DBC.js';
+import { loadDbcFile, getCanNames, getActiveFileName, hexDataToPhysicalData, parseMessage as parse } from '../utils/DBC.js';
 import Settings from '../models/settingsModel.js';
 
-const activeFileId = '625e5c7fd9444459f400f658';
+const activeFileId = "625e5c7fd9444459f400f658";
 
 
 (async() => {
@@ -92,6 +92,16 @@ const deleteDbcFile = (req, res) => {
     }
 }
 
+const calculateValue = (rawData) => {
+    const realValues = hexDataToPhysicalData(rawData);
+    return realValues;
+}
+
+const parseMessage = (carMessage) => {
+    const parsedMessages = parse(carMessage);
+    return parsedMessages;
+}
+
 // FIXME: not working yet
 const downloadDbcFile = (req, res) => {
     var filePath = "db/dbcFiles/" + req.query.filename; // Or format the path using the `id` rest param
@@ -110,5 +120,4 @@ const downloadDbcFile = (req, res) => {
     })
 }
 
-
-export { loadFileNames, changeActiveFile, loadCanList, deleteDbcFile, downloadDbcFile }
+export { loadFileNames, changeActiveFile, loadCanList, deleteDbcFile, downloadDbcFile, calculateValue, parseMessage }

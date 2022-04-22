@@ -1,5 +1,5 @@
 'use strict';
-import { calculateValue as calculate } from '../utils/DBC.js';
+import { calculateValue as calculate } from './dbcFileController';
 
 const getHistory = (req, res) => {
     console.log('getHistory');
@@ -7,8 +7,10 @@ const getHistory = (req, res) => {
 }
 
 const calculateValue = (req, res) => {
+    console.log('dataController');
     let values = calculate(req.query);
     res.send({ value: values }).status(204);
 }
 
-export { getHistory, calculateValue };
+
+export { getHistory, calculateValue, };

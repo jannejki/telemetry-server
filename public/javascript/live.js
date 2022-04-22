@@ -30,8 +30,9 @@ function ServerInterface() {
     this.interval = undefined;
     this.latestMessage = undefined;
     this.intervaltime = 2000;
-    this.webSocket = new WebSocket('ws://152.70.178.116:3000');
-    //this.webSocket = new WebSocket('ws://127.0.0.1:3000');
+    // Creating socket
+    const liveSocket = io();
+    const liveChannel = 'live';
 
     // Adds new canID to a array that is sent to server to ask the latest messages from the
     // can ids that are in array. 
@@ -39,10 +40,10 @@ function ServerInterface() {
         this.idArray["canID"].push({ can: canID })
     };
 
-    socket.addEventListener("message", (event) => {
-        let receivedMessage = JSON.parse(event.data);
-        if (receivedMessage.latestMessage) {
-            this.latestMessage = receivedMessage.latestMessage;
+    // Event listener for websocket
+    liveSocket.on(liveChannel, (msg) => {
+        if (msg.latestMessage) {
+            this.latestMessage = msg.latestMessage;
         }
     })
 
@@ -190,7 +191,6 @@ function addChart() {
             })
         }
         try {
-
             updateChart(latestMessage, chart, ticks, labelAmount, oneSec);
         } catch (error) {
             clearInterval(chartUpdateInterval);
@@ -264,6 +264,7 @@ function updateChart(latestMessage, chart, ticks, startTime, oneSec) {
     let label = ticks / oneSec;
     for (let i = 0; i < latestMessage.length; i++) {
         for (let j = 0; j < chart.data.datasets.length; j++) {
+            console.log(chart.data.datasets);
             if (chart.data.datasets[j].label === latestMessage[i].name + " (" + latestMessage[i].unit + ")") {
                 chart.data.datasets[j].data.push(parseFloat(latestMessage[i].data.toFixed(2)));
                 if (ticks > startTime) {

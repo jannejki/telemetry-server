@@ -1,27 +1,29 @@
 'use strict';
 
-const WebSocket = require('ws');
-let wss;
+import { Server } from 'socket.io';
+import { calculateValue } from '../controllers/dbcFileController';
 
+let io;
 const startWs = (server) => {
-    wss = new WebSocket.Server({ server: server });
-    wss.on('connection', async function connection(ws) {
-        console.log('A new Websocket- client Connected!');
-        //FIXME: send real car status
-        ws.send(JSON.stringify({ carStatus: false }));
+    io = new Server(server);
+    io.on('connection', (socket) => {
+        sendCarStatus();
+        socket.on('disconnect', () => {});
     });
 }
 
-const sendLiveData = (rawData) => {
-    let dataArray = [];
-    for (let i in rawData) {
-        let calculatedValue = dbcParser.calculateValue(rawData[i]);
-        if (calculatedValue.error) throw calculatedValue;
-        dataArray.push(calculatedValue);
-    }
-    wss.clients.forEach(function each(client) {
-        client.send(JSON.stringify({ latestMessage: dataArray }));
-    });
+const sendCarStatus = () => {
+    io.emit('carStatus', { carStatus: false });
 }
+
+const sendLiveData = (parsedMessage) => {
+    let dataArray = [];
+    for (let i in parsedMessage) {
+        let calculatedValue = calculateValue(parsedMessage[i]);
+        if (!calculatedValue.error) dataArray.push(calculatedValue);
+    }
+    io.emit('live', { latestMessage: dataArray });
+}
+
 
 export { startWs, sendLiveData };

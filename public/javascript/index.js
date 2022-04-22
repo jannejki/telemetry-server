@@ -47,14 +47,15 @@ function getNodes() {
     })
 }
 
-const cardSocket = new WebSocket('ws://127.0.0.1:3000');
+//const cardSocket = new WebSocket('ws://127.0.0.1:3000');
 //const cardSocket = new WebSocket('ws://152.70.178.116:3000');
+const cardSocket = io();
+const liveChannel = 'live';
 
 /**
  * @brief event listener starts updating cards
  */
-cardSocket.addEventListener('message', function(event) {
-    const message = JSON.parse(event.data);
+cardSocket.on(liveChannel, (message) => {
     if (message.latestMessage) {
         let cards = document.getElementsByClassName("card");
 

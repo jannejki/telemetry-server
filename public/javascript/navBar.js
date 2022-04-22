@@ -1,30 +1,21 @@
+// Creating socket
+const socket = io();
+const channel = 'carStatus';
+
 // Global variable for timeout object
 let timeout;
 
 // Global variable for carStatus html-element
 let carStatus = document.getElementById("carStatus");
 
-// Create WebSocket connection.
-const socket = new WebSocket('ws://127.0.0.1:3000');
-
-// Connection opened
-socket.addEventListener('open', function(event) {
-    console.log('Connected to WS Server')
-});
-
-socket.addEventListener('message', (event) => {
-    console.log(event.data);
-})
-
-socket.addEventListener('message', function(event) {
-    let message = JSON.parse(event.data);
-
-    if (document.getElementById("debug").checked && message.debug) {
-        console.log(message);
+// Event listener for messages
+socket.on(channel, (msg) => {
+    if (document.getElementById("debug").checked && msg) {
+        console.log(msg);
     }
 
     // Checks if there is carStatus -value in message and it is true
-    if (message.carStatus) {
+    if (msg.carStatus) {
 
         // if timeout is on, clear it
         if (timeout != undefined) {
@@ -42,8 +33,8 @@ socket.addEventListener('message', function(event) {
         carNotActive();
     }
 
-    if (message.error) {
-        console.log(message.errorMessage);
+    if (msg.error) {
+        console.log(msg.errorMessage);
     }
 });
 

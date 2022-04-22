@@ -1,6 +1,7 @@
 'use strict';
 import mqtt from 'mqtt';
-import { parseMessage, calculateValue } from './DBC';
+import { parseMessage, calculateValue } from '../controllers/dbcFileController';
+
 import Data from '../models/dataModel';
 import { sendLiveData } from './websocket';
 
@@ -20,12 +21,9 @@ client.subscribe("messages");
 // receive MQTT messages
 client.on('message', async function(topic, message, packet) {
     try {
-        const rawData = parseMessage(message.toString());
-        const calculatedValues = rawData.map(canData => calculateValue(canData));
-
-        // TODO: send calculatedValues to client via websocket
-        sendLiveData(calculatedValues);
-        await Data.create(rawData);
+        const parsedMessage = parseMessage(message.toString());
+        sendLiveData(parsedMessage);
+        await Data.create(parsedMessage);
 
     } catch (error) {
         console.log("message is corrupted!");
