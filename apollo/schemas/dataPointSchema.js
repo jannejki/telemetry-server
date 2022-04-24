@@ -2,12 +2,12 @@ import { gql } from 'apollo-server-express';
 
 export default gql `
   extend type Query {
-      data(id: String, canNode: String,  DLC: String, data: String): [Data]
+      dataPoint(id: String, CAN: String,  DLC: String, data: String): [dataPoint]
   }
 
-  type Data {
+  type dataPoint {
       id: ID,
-      node: String,
+      CAN: String,
       DLC: String,
       data: String
   }

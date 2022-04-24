@@ -1,9 +1,7 @@
 'use strict';
 import mqtt from 'mqtt';
-import { saveData } from '../controllers/dataController';
+import { saveData } from '../controllers/dataPointController';
 import { parseMessage, calculateValue } from '../controllers/dbcFileController';
-
-import Data from '../models/dataModel';
 import { sendLiveData, sendDebugMessage } from './websocket';
 
 const mqttServer = '152.70.178.116:1883';
@@ -24,13 +22,12 @@ client.subscribe("messages");
 client.on('message', async function(topic, message, packet) {
     try {
         const parsedMessage = parseMessage(message.toString());
-        console.log(parsedMessage);
         sendLiveData(parsedMessage);
         await saveData(parsedMessage);
         sendDebugMessage({ error: null, received: message.toString('hex') });
     } catch (error) {
         console.log("message is corrupted!");
-        // console.log(error);
+        console.log(error);
         sendDebugMessage({ error: error, received: message.toString('hex') });
     }
 });

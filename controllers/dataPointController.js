@@ -1,6 +1,6 @@
 'use strict';
 import { calculateValue as calculate } from './dbcFileController';
-import dataModel from '../models/dataModel';
+import dataPointModel from '../models/dataPointModel';
 
 const getHistory = (req, res) => {
     console.log('getHistory');
@@ -15,7 +15,7 @@ const calculateValue = (req, res) => {
 
 const saveData = async(parsedMessage) => {
     parsedMessage.forEach(async(msg) => {
-        await dataModel.create({ canNode: msg.canID, DLC: msg.DLC, data: msg.data });
+        await dataPointModel.create({ CAN: msg.canID, DLC: msg.DLC, data: msg.data });
     });
 }
 

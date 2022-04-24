@@ -1,4 +1,4 @@
 'use strict';
-import dataResolver from './dataResolver.js';
+import dataPointResolver from './dataPointResolver.js';
 
-export default [dataResolver];
+export default [dataPointResolver];
