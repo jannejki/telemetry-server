@@ -24,12 +24,13 @@ client.subscribe("messages");
 client.on('message', async function(topic, message, packet) {
     try {
         const parsedMessage = parseMessage(message.toString());
+        console.log(parsedMessage);
         sendLiveData(parsedMessage);
         await saveData(parsedMessage);
         sendDebugMessage({ error: null, received: message.toString('hex') });
     } catch (error) {
         console.log("message is corrupted!");
-        console.log(error);
+        // console.log(error);
         sendDebugMessage({ error: error, received: message.toString('hex') });
     }
 });

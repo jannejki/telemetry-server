@@ -1,6 +1,5 @@
 'use strict';
 import { calculateValue as calculate } from './dbcFileController';
-import canNodeModel from '../models/canNodeModel';
 import dataModel from '../models/dataModel';
 
 const getHistory = (req, res) => {
@@ -16,11 +15,7 @@ const calculateValue = (req, res) => {
 
 const saveData = async(parsedMessage) => {
     parsedMessage.forEach(async(msg) => {
-        const node = await canNodeModel.findOne({ canID: msg.canID });
-
-        if (node) {
-            await dataModel.create({ canNode: node._id, DLC: msg.DLC, data: msg.data });
-        }
+        await dataModel.create({ canNode: msg.canID, DLC: msg.DLC, data: msg.data });
     });
 }
 

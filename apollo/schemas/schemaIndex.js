@@ -1,6 +1,5 @@
 'use strict';
 import { gql } from 'apollo-server-express';
-import canNodeSchema from './canNodeSchema.js';
 import dataSchema from './dataSchema.js';
 
 const linkSchema = gql `
@@ -15,5 +14,4 @@ const linkSchema = gql `
 export default [
     linkSchema,
     dataSchema,
-    canNodeSchema
 ];
