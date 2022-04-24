@@ -1,6 +1,7 @@
 'use strict';
 import { gql } from 'apollo-server-express';
 import dataPointSchema from './dataPointSchema.js';
+import dataValueSchema from './dataValueSchema.js';
 
 const linkSchema = gql `
   type Query {
@@ -14,4 +15,5 @@ const linkSchema = gql `
 export default [
     linkSchema,
     dataPointSchema,
+    dataValueSchema
 ];

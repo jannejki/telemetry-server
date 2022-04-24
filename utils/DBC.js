@@ -264,7 +264,7 @@ const hexDataToPhysicalData = (message) => {
         let value = parseFloat(rule.offset) + parseFloat(rule.scale) * rawValue;
 
         // push calculated value to array
-        valueArray.push({ canID: message.canID, name: rule.name, data: value, unit: rule.unit, min: rule.min, max: rule.max })
+        valueArray.push({ canID: message.canID, name: rule.name, hexData: message.data, data: value, unit: rule.unit, min: rule.min, max: rule.max })
     })
     return valueArray;
 }

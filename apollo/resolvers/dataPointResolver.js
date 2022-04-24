@@ -7,9 +7,7 @@ export default {
             if (args.CAN) {
                 return await dataPointModel.find({ CAN: args.CAN });
             }
-            const testi = await dataPointModel.find();
-            console.log(testi);
-            return testi;
+            return await dataPointModel.find();
         },
     },
 };

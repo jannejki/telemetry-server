@@ -9,6 +9,6 @@ export default gql `
       id: ID,
       CAN: String,
       DLC: String,
-      data: String
+      data: [dataValue]
   }
 `;

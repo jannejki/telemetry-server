@@ -1,5 +1,6 @@
 'use strict';
 import { calculateValue as calculate } from './dbcFileController';
+import dataValueModel from '../models/dataValueModel';
 import dataPointModel from '../models/dataPointModel';
 
 const getHistory = (req, res) => {
@@ -14,8 +15,17 @@ const calculateValue = (req, res) => {
 }
 
 const saveData = async(parsedMessage) => {
+
     parsedMessage.forEach(async(msg) => {
-        await dataPointModel.create({ CAN: msg.canID, DLC: msg.DLC, data: msg.data });
+        const realDatas = calculate(msg);
+
+        const dataValueModels = await Promise.all(
+            realDatas.map(async(data) => {
+                const result = await dataValueModel.create({ hexValue: data.hexData, decValue: data.data, unit: data.unit });
+                return result._id;
+            })
+        );
+        await dataPointModel.create({ CAN: msg.canID, DLC: msg.DLC, data: dataValueModels });
     });
 }
 
