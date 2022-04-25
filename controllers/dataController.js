@@ -18,14 +18,13 @@ const saveData = async(parsedMessage) => {
 
     parsedMessage.forEach(async(msg) => {
         const realDatas = calculate(msg);
-
         const dataValueModels = await Promise.all(
             realDatas.map(async(data) => {
                 const result = await dataValueModel.create({ hexValue: data.hexData, decValue: data.data, unit: data.unit });
                 return result._id;
             })
         );
-        await dataPointModel.create({ CAN: msg.canID, DLC: msg.DLC, data: dataValueModels });
+        await dataPointModel.create({ CAN: msg.canID, DLC: msg.DLC, data: dataValueModels, timestamp: msg.timestamp });
     });
 }
 

@@ -1,4 +1,6 @@
-var chartList = [];
+'use strict';
+
+const chartList = [];
 
 window.onload = () => {
     //checking current date and time to preset values for user inputs
@@ -29,7 +31,7 @@ window.onload = () => {
                 option.innerText = data.canList[i].name;
                 document.getElementById("canDropDown").appendChild(option);
             }
-        })
+        });
 }
 
 /**
@@ -48,7 +50,7 @@ function checkTime(i) {
  * @brief event listener for addNewChartOptions form.
  * @description sends request to get the data for selected CAN and time.
  */
-document.forms['addNewChartOptions'].addEventListener('submit', (event) => {
+document.forms['addNewChartOptions'].addEventListener('submit', async(event) => {
     // preveting default event
     event.preventDefault();
 
@@ -62,92 +64,44 @@ document.forms['addNewChartOptions'].addEventListener('submit', (event) => {
     let startTime2 = date + " " + hourStart;
     let endTime2 = date + " " + hourEnd;
 
-    // Sends GET request to server to get data 
-    fetch("/getHistory?can=" + canID + "&startTime=" + startTime2 + "&endTime=" + endTime2)
-        .then(response => {
-            switch (response.status) {
-                case 404:
-                    alert("No data found!");
-                    return false;
-                    break;
-                case 500:
-                    alert("Something went wrong!");
-                    return false;
-                    break;
-                case 200:
-                    return response.json();
-                    break;
-            }
-        })
-        .then((data) => {
-            if (data === false) return;
-            createChart(data.data);
-        })
-})
+    const query = `query DataPoint($can: String, $startTime: String, $endTime: String) {
+        dataPoint(CAN: $can, startTime: $startTime, endTime: $endTime) {
+          CAN
+          timestamp
+          data {
+            decValue
+            unit
+          }
+        }
+      }`;
+
+    const variables = {
+        startTime: startTime2,
+        endTime: endTime2,
+        can: canID
+    }
+
+    const data = await fetchGQL(query, variables);
+    createChartElements(data.data.dataPoint, canID);
+    fillChartWithValues(data.data.dataPoint);
+});
 
 
 /**
- * @brief creates new html elements for chart and creates chart object.
+ * @brief Fills chart with data values
  * @param {*} data 
  */
-function createChart(data) {
-    let chartSettings = new ChartSettings();
-    let chartData = chartSettings.data;
-    let chartOptions = chartSettings.options;
-    let selectedCAN = document.getElementById("canDropDown").value;
+function fillChartWithValues(dataPoints) {
+    const chartSettings = new ChartSettings();
+    const chartData = chartSettings.data;
+    const chartOptions = chartSettings.options;
+    const selectedCAN = document.getElementById("canDropDown").value;
 
-    let div = document.createElement("div");
-    div.setAttribute("class", "chartDiv");
-
-    let chartDiv = document.createElement("div");
-    chartDiv.setAttribute("id", selectedCAN + "div");
-    chartDiv.setAttribute("class", "chart");
-
-    let canvas = document.createElement("canvas");
-    chartDiv.appendChild(canvas);
-    canvas.setAttribute("id", selectedCAN);
-
-
-    let rangeInputDiv = document.createElement("div");
-    rangeInputDiv.setAttribute("class", "rangeInput");
-
-    let minSlider = document.createElement("input");
-    minSlider.setAttribute("type", "range");
-    minSlider.setAttribute("id", "min" + selectedCAN);
-    minSlider.setAttribute("class", "range");
-    minSlider.setAttribute("min", 0);
-    minSlider.setAttribute("max", (data.length - 1));
-    minSlider.setAttribute("value", 0);
-
-    minSlider.oninput = function() {
-        sliderFunction(selectedCAN, data);
-    }
-
-    let maxSlider = document.createElement("input");
-    maxSlider.setAttribute("type", "range");
-    maxSlider.setAttribute("id", "max" + selectedCAN);
-    maxSlider.setAttribute("class", "range");
-    maxSlider.setAttribute("max", (data.length));
-    maxSlider.setAttribute("min", 1);
-    maxSlider.setAttribute("value", (data.length));
-
-    maxSlider.oninput = function() {
-        sliderFunction(selectedCAN, data);
-    }
-
-    rangeInputDiv.appendChild(minSlider);
-    rangeInputDiv.appendChild(maxSlider);
-
-    div.appendChild(chartDiv);
-    div.appendChild(rangeInputDiv);
-
-    document.querySelector("main").appendChild(div);
-
-    for (let j = 0; j < data[0].length; j++) {
+    for (let datasets in dataPoints[0].data) {
         let randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
         let dataset = {
             spanGaps: true,
-            label: "",
+            label: dataPoints[0].data[datasets].unit,
             backgroundColor: randomColor,
             borderColor: randomColor,
             borderWidth: 2,
@@ -156,24 +110,24 @@ function createChart(data) {
             data: []
         }
 
-        for (let i = 0; i < data.length; i++) {
-            let value = parseFloat(data[i][j].data);
+        for (let i = 0; i < dataPoints.length; i++) {
+            let value = parseFloat(dataPoints[i].data[datasets].decValue);
 
             if (value > chartOptions.scales.y.max) {
                 chartOptions.scales.y.max = (value + 2);
             }
             dataset.data.push(value);
-            dataset.label = data[i][j].name;
         }
         chartData.datasets.push(dataset);
     }
-    for (let i = 0; i < data.length; i++) {
-        chartData.labels.push(data[i][0].time.slice(data[i][0].time.indexOf(" ")))
+    for (let i = 0; i < dataPoints.length; i++) {
+        chartData.labels.push(dataPoints[i].timestamp.slice(dataPoints[i].timestamp.indexOf(" ")))
     }
     chartOptions.lineTension = 0;
     chartOptions.elements.point.radius = 3;
     chartOptions.scales.x.grid.display = true;
 
+    const canvas = document.getElementById(selectedCAN);
     let chart = new Chart(canvas, {
         type: 'line',
         options: chartOptions,
@@ -182,33 +136,96 @@ function createChart(data) {
     chartList.push(chart);
 }
 
+
+/**
+ * @brief Creates chart HTML elements 
+ * @param {*} dataPoints 
+ * @param {*} selectedCAN 
+ */
+const createChartElements = (dataPoints, selectedCAN) => {
+    let div = document.createElement("div");
+    div.setAttribute("class", "chartDiv");
+
+    div.innerHTML = `   <div id="${selectedCAN}div" class="chart">
+                            <canvas id="${selectedCAN}"></canvas>
+                        </div>
+                        
+                        <div class="rangeInput">
+                            <input type="range" id="min${selectedCAN}" class="range" min="0" max="${dataPoints.length -1}" value="0";>
+                            <input type="range" id="max${selectedCAN}" class="range" max="${dataPoints.length}" min="1" value="${dataPoints.length}">
+                        </div>`;
+
+    document.querySelector('main').appendChild(div);
+
+    const minSlider = document.getElementById(`min${selectedCAN}`);
+    const maxSlider = document.getElementById(`max${selectedCAN}`);
+
+    minSlider.oninput = function() {
+        sliderFunction(selectedCAN, dataPoints);
+    }
+
+    maxSlider.oninput = function() {
+        sliderFunction(selectedCAN, dataPoints);
+    }
+}
+
 /**
  * @brief updates chart to show only values between range inputs.
  * @param {*} canID 
  * @param {*} data 
  */
-function sliderFunction(canID, data) {
+function sliderFunction(canID, dataPoints) {
     const minSlider = document.getElementById("min" + canID);
     const maxSlider = document.getElementById("max" + canID);
-
 
     for (let i = 0; i < chartList.length; i++) {
         if (chartList[i].canvas.id == canID) {
 
-            for (let j = 0; j < data[0].length; j++) {
+            for (let datasets in dataPoints[0].data) {
                 let valueArray = [];
                 let labelArray = [];
-                for (let i = 0; i < data.length; i++) {
-                    if (i >= minSlider.value && i <= maxSlider.value) {
-                        let value = parseFloat(data[i][j].data);
+                for (let i = 0; i < dataPoints.length; i++) {
+                    if (i >= minSlider.value && i < maxSlider.value) {
+                        let value = parseFloat(dataPoints[i].data[datasets].decValue);
                         valueArray.push(value);
-                        labelArray.push(data[i][j].time.slice(data[i][j].time.indexOf(" ")));
+                        labelArray.push(dataPoints[i].timestamp.slice(dataPoints[i].timestamp.indexOf(" ")));
                     }
                 }
-                chartList[i].data.datasets[j].data = valueArray;
+                chartList[i].data.datasets[datasets].data = valueArray;
                 chartList[i].data.labels = labelArray;
             }
             chartList[i].update();
         }
     }
+}
+
+/**
+ * @brief Sends graphql query to server and returns received data
+ * @param {*} query grapqhl query
+ * @param {*} variables possible variables for query
+ * @returns {*} received data
+ */
+const fetchGQL = (query, variables) => {
+    return new Promise((resolve) => {
+        fetch('/graphql', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    query,
+                    variables
+                })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.errors) {
+                    alert(data.errors[0].extensions.code);
+                    return;
+                } else {
+                    resolve(data);
+                }
+            });
+    })
 }
