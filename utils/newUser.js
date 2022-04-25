@@ -16,4 +16,17 @@ const newUser = async(cred) => {
     });
 }
 
-export default newUser;
+const getNewPassword = async(pwd) => {
+    return new Promise(async(resolve) => {
+        try {
+            bcrypt.hash(pwd, parseInt(process.env.SALT), async(err, hash) => {
+                resolve(hash);
+            });
+        } catch (err) {
+            console.log('newUser', err);
+            return err;
+        }
+    });
+}
+
+export { newUser, getNewPassword };

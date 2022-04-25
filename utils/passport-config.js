@@ -11,6 +11,7 @@ const localStrategy = async(username, password, done) => {
 
     try {
         if (await bcrypt.compare(password, users[0].password)) {
+            users[0].password = undefined;
             return done(null, users[0]);
         } else {
             console.log('no users found')

@@ -1,5 +1,5 @@
 'user strict';
-import createNewUser from '../utils/newUser.js';
+import { newUser as createNewUSer } from '../utils/newUser.js';
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 const loginPage = async(req, res) => {
@@ -56,5 +56,6 @@ const checkAuthorized = (req, res, next) => {
         res.sendStatus(401);
     }
 }
+
 
 export { loginPage, loginCredentials, newUser, logout, addNewUser, checkAuthenticated, checkAuthorized }

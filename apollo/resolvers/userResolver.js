@@ -1,10 +1,13 @@
 'use strict';
-import newUser from "../../utils/newUser";
+import { newUser, getNewPassword } from "../../utils/newUser";
 import userModel from "../models/userModel";
+import { AuthenticationError, ForbiddenError } from 'apollo-server-express';
+import bcrypt from 'bcrypt';
 
 export default {
     Query: {
-        users: async(parent, args) => {
+        users: async(parent, args, context) => {
+            if (!context.user) throw new AuthenticationError('UNAUTHENTICATED');
 
             // Find by admin rights
             if (args.rights && !args.username) return await userModel.find({ rights: args.rights });
@@ -21,17 +24,25 @@ export default {
     },
 
     Mutation: {
-        addUser: async(parent, args) => {
-            console.log('addUser ', args);
+        addUser: async(parent, args, context) => {
+            if (!context.user.rights) throw new ForbiddenError('UNAUTHORIZED');
+
             const createdUser = await newUser(args);
-            console.log(createdUser);
             return createdUser;
         },
 
-        deleteUser: async(parent, args) => {
-            console.log(args);
+        deleteUser: async(parent, args, context) => {
+            if (!context.user.rights) throw new ForbiddenError('UNAUTHORIZED');
+
             const result = await userModel.findOneAndDelete({ _id: args.id });
-            console.log(result);
+            return result;
+        },
+
+        changePassword: async(parent, args, context) => {
+            if (!context.user.rights) throw new ForbiddenError('UNAUTHORIZED');
+
+            const hashedPwd = await getNewPassword(args.password);
+            const result = await userModel.findOneAndUpdate({ _id: args.id }, { password: hashedPwd });
             return result;
         }
     }

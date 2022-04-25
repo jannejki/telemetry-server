@@ -17,7 +17,6 @@ import { ApolloServer } from 'apollo-server-express';
 import typeDefs from './apollo/schemas/schemaIndex';
 import resolvers from './apollo/resolvers/resolverIndex';
 
-
 dotenv.config();
 
 const port = 3000;
@@ -31,6 +30,7 @@ const port = 3000;
             throw new Error('db not connected');
         }
 
+        // express app
         const app = express();
         app.set('view engine', 'ejs');
         app.use(express.static(path.join(__dirname, 'public')));
@@ -45,25 +45,33 @@ const port = 3000;
             saveUninitialized: false
         }))
         app.use(passport.session())
-
-        const apolloServer = new ApolloServer({
-            typeDefs,
-            resolvers,
-        });
-
-        await apolloServer.start();
-        apolloServer.applyMiddleware({ app });
-
         app.use('/login', loginRoute);
         app.use('/', webRoute);
         app.use('/settings', settingsRoute);
         app.use('/data', dataRoute);
 
-        const server = require('http').createServer(app);
 
+        // Apollo graphql server
+        const apolloServer = new ApolloServer({
+            typeDefs,
+            resolvers,
+            context: async({ req, res }) => {
+                const user = req.user || false;
+                return { user };
+            }
+        });
+
+        await apolloServer.start();
+        apolloServer.applyMiddleware({ app });
+
+
+        // Server
+        const server = require('http').createServer(app);
         server.listen(port, () => {
             console.log(`Server listening port ${port}`);
         });
+
+        // websocket
         startWs(server);
 
     } catch (e) {

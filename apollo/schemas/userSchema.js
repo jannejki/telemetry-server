@@ -14,8 +14,8 @@ export default gql `
             ): user,
 
     deleteUser(id: String!): user
+    changePassword(id: String!, password: String!): user
     }
-
 
   type user {
       id: ID,
