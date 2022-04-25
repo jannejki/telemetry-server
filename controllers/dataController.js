@@ -1,7 +1,7 @@
 'use strict';
 import { calculateValue as calculate } from './dbcFileController';
-import dataValueModel from '../models/dataValueModel';
-import dataPointModel from '../models/dataPointModel';
+import dataValueModel from '../apollo/models/dataValueModel';
+import dataPointModel from '../apollo/models/dataPointModel';
 
 const getHistory = (req, res) => {
     console.log('getHistory');

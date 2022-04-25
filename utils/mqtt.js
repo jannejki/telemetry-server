@@ -1,6 +1,6 @@
 'use strict';
 import mqtt from 'mqtt';
-import { saveData } from '../controllers/dataPointController';
+import { saveData } from '../controllers/dataController';
 import { parseMessage, calculateValue } from '../controllers/dbcFileController';
 import { sendLiveData, sendDebugMessage } from './websocket';
 

@@ -1,4 +1,5 @@
-import dataValueModel from "../../models/dataValueModel";
+'use strict';
+import dataValueModel from "../models/dataValueModel";
 
 export default {
     Query: {

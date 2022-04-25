@@ -1,4 +1,5 @@
-import dataPointModel from "../../models/dataPointModel";
+'use strict';
+import dataPointModel from "../models/dataPointModel";
 
 export default {
     Query: {

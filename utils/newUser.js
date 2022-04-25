@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import User from '../models/userModel';
+import User from '../apollo/models/userModel';
 
 const newUser = async(cred) => {
     try {

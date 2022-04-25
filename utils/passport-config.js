@@ -1,4 +1,4 @@
-import User from '../models/userModel';
+import User from '../apollo/models/userModel';
 import bcrypt from 'bcrypt';
 
 const localStrategy = async(username, password, done) => {

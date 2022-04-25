@@ -1,6 +1,6 @@
 'use strict';
 import express from 'express';
-import { calculateValue, getHistory } from '../controllers/dataPointController.js';
+import { calculateValue, getHistory } from '../controllers/dataController.js';
 import { checkAuthenticated } from '../controllers/loginController.js';
 
 const router = express.Router();

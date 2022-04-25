@@ -4,7 +4,7 @@ import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
 import { loadDbcFile, getCanNames, getActiveFileName, hexDataToPhysicalData, parseMessage as parse } from '../utils/DBC.js';
-import Settings from '../models/settingsModel.js';
+import Settings from '../apollo/models/settingsModel.js';
 
 const activeFileId = "625e5c7fd9444459f400f658";
 
