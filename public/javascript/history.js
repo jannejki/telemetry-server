@@ -82,6 +82,10 @@ document.forms['addNewChartOptions'].addEventListener('submit', async(event) => 
     }
 
     const data = await fetchGQL(query, variables);
+    if (data.data.dataPoint.length === 0) {
+        alert('No data found!');
+        return;
+    }
     createChartElements(data.data.dataPoint, canID);
     fillChartWithValues(data.data.dataPoint);
 });
