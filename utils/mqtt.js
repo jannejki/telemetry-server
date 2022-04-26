@@ -4,9 +4,15 @@ import { saveData } from '../controllers/dataController';
 import { parseMessage, calculateValue } from '../controllers/dbcFileController';
 import { sendLiveData, sendDebugMessage } from './websocket';
 
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+
+let clientId;
+if (process.env.NODE_ENV == 'development') {
+    clientId = 'laptop';
+} else {
+    clientId = 'server1';
+}
 const mqttServer = '152.70.178.116:1883';
-//const mqttServer = '127.0.0.1:1883';
-const clientId = 'server';
 
 const client = mqtt.connect(`mqtt:${mqttServer}`, { clientId });
 

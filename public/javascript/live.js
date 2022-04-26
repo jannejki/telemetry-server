@@ -75,7 +75,8 @@ function ServerInterface() {
                 "canID": canID,
                 "data": 0,
                 "timestamp": undefined,
-                "DLC": undefined
+                "DLC": undefined,
+                "name": undefined
             }]
 
         } catch (error) {
@@ -170,35 +171,38 @@ function addChart() {
 
     // Starting an interval that will update the chart with new data.
     let chartUpdateInterval = setInterval(() => {
-        let latestMessage = serverInterface.getLatestMessages(selectedCAN);
+            let latestMessage = serverInterface.getLatestMessages(selectedCAN);
 
-        // for every data message from node, create new dataset to same chart
-        if (chart.data.datasets.length === 0) {
-            latestMessage.forEach((data) => {
-                let randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
+            // for every data message from node, create new dataset to same chart
+            if (chart.data.datasets.length === 0) {
+                if (latestMessage[0].name == undefined) return;
+                latestMessage.forEach((data) => {
+                    let randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
 
-                let dataset = {
-                    spanGaps: true,
-                    label: data.name + " (" + data.unit + ")",
-                    backgroundColor: randomColor,
-                    borderColor: randomColor,
-                    borderWidth: 2,
-                    hoverBackgroundColor: randomColor,
-                    hoverBorderColor: randomColor,
-                    data: []
-                }
-                chart.data.datasets.push(dataset);
-            })
-        }
-        try {
-            updateChart(latestMessage, chart, ticks, labelAmount, oneSec);
-        } catch (error) {
-            clearInterval(chartUpdateInterval);
-            console.error(error);
-        }
-        lastMessage = latestMessage;
-        ticks++;
-    }, interval);
+                    let dataset = {
+                        dataName: data.name,
+                        spanGaps: true,
+                        label: data.name + " (" + data.unit + ")",
+                        backgroundColor: randomColor,
+                        borderColor: randomColor,
+                        borderWidth: 2,
+                        hoverBackgroundColor: randomColor,
+                        hoverBorderColor: randomColor,
+                        data: []
+                    }
+                    chart.data.datasets.push(dataset);
+                })
+            }
+            try {
+                updateChart(latestMessage, chart, ticks, labelAmount, oneSec);
+            } catch (error) {
+                clearInterval(chartUpdateInterval);
+                console.error(error);
+            }
+            lastMessage = latestMessage;
+            ticks++;
+        },
+        interval);
 }
 
 
@@ -250,8 +254,6 @@ function createChartElements(selectedCAN) {
 
 
 
-
-
 /**
  * @brief function updates chart data.
  * @param latestMessage {text} latest message that was received
@@ -264,7 +266,6 @@ function updateChart(latestMessage, chart, ticks, startTime, oneSec) {
     let label = ticks / oneSec;
     for (let i = 0; i < latestMessage.length; i++) {
         for (let j = 0; j < chart.data.datasets.length; j++) {
-            console.log(chart.data.datasets);
             if (chart.data.datasets[j].label === latestMessage[i].name + " (" + latestMessage[i].unit + ")") {
                 chart.data.datasets[j].data.push(parseFloat(latestMessage[i].data.toFixed(2)));
                 if (ticks > startTime) {
