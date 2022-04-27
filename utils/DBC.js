@@ -344,12 +344,13 @@ const getDecodingRules = (canID) => {
                 unit: unit
             })
         })
+
         return signalArray;
 
     } catch (error) {
-        console.log(error);
+        console.log('getDecodingRules:', error);
         // if something went wrong, return this
-        return { error: error, value: undefined }
+        return [{ error: error, value: undefined }]
     }
 }
 
@@ -394,4 +395,4 @@ const parseMessage = (message) => {
     }
 }
 
-export { parseMessage, hexDataToPhysicalData, getCanNames, loadDbcFile, getActiveFileName }
+export { parseMessage, hexDataToPhysicalData, getCanNames, loadDbcFile, getActiveFileName, getDecodingRules }

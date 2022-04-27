@@ -6,10 +6,11 @@ html {
     display: flex;
     flex-wrap: wrap;
     margin: auto;
+    align-items: center;
 }
 
 .card {
-    width: 15%;
+    width: 20%;
     height: auto;
     min-height: 150px;
     margin: 0.5em;
@@ -21,11 +22,15 @@ html {
 }
 
 .running {
-    background-color: rgb(0, 199, 0);
+    background-color: rgb(5 136 0);
+}
+
+.running h2 {
+    color: white;
 }
 
 .fault {
-    background-color: red;
+    background-color: yellow;
 }
 
 .notResponding {
@@ -44,6 +49,17 @@ html {
     margin: 0;
 }
 
-.messageDiv {
-    margin: 1em;
+.messageDiv {}
+
+.dataTable {
+    padding: 0 0.5em;
+}
+
+tr {
+    width: 100%;
+}
+
+td {
+    text-align: center;
+    width: 50%;
 }

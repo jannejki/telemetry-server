@@ -3,7 +3,7 @@
 import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
-import { loadDbcFile, getCanNames, getActiveFileName, hexDataToPhysicalData, parseMessage as parse } from '../utils/DBC.js';
+import { loadDbcFile, getCanNames, getActiveFileName, hexDataToPhysicalData, parseMessage as parse, getDecodingRules } from '../utils/DBC.js';
 import Settings from '../apollo/models/settingsModel.js';
 
 const activeFileId = "625e5c7fd9444459f400f658";
@@ -78,7 +78,8 @@ const changeActiveFile = async(req, res) => {
 }
 
 const loadCanList = (req, res) => {
-    res.send({ canList: getCanNames() }).status(204);
+    return getCanNames();
+    //res.send({ canList: getCanNames() }).status(204);
 }
 
 const deleteDbcFile = (req, res) => {
@@ -90,6 +91,11 @@ const deleteDbcFile = (req, res) => {
         res.sendStatus(500);
         console.log(err);
     }
+}
+
+const loadCanRules = (canID) => {
+    const rules = getDecodingRules(canID);
+    return rules;
 }
 
 const calculateValue = (rawData) => {
@@ -120,4 +126,4 @@ const downloadDbcFile = (req, res) => {
     })
 }
 
-export { loadFileNames, changeActiveFile, loadCanList, deleteDbcFile, downloadDbcFile, calculateValue, parseMessage }
+export { loadFileNames, changeActiveFile, loadCanList, deleteDbcFile, downloadDbcFile, calculateValue, parseMessage, loadCanRules }

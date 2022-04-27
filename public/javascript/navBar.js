@@ -1,12 +1,16 @@
-// Creating socket
+// Creating Websocket
 const socket = io();
+
+// Websocket channels
 const statusChannel = 'carStatus';
 const debugChannel = 'debug';
+
 // Global variable for timeout object
 let timeout;
 
 // Global variable for carStatus html-element
 let carStatus = document.getElementById("carStatus");
+
 
 // Event listener for messages
 socket.on(statusChannel, (msg) => {
@@ -18,21 +22,19 @@ socket.on(statusChannel, (msg) => {
         // if there is no carStatus value or it is false, change element class and text
         carNotActive();
     }
-
-    if (msg.error) {
-        console.log(msg.errorMessage);
-    }
 });
 
 
+// Websocket that listens to debug channel
 socket.on(debugChannel, (msg) => {
     carActive();
-    if (document.getElementById("debugSwitch").checked) {
+    if (document.getElementById('debug').checked) {
         console.log(msg);
     }
 });
 
 
+// Changes navigation bar status to online
 function carActive() {
     // if timeout is on, clear it
     if (timeout != undefined) {
@@ -47,9 +49,8 @@ function carActive() {
     timeout = setTimeout(carNotActive, 60000);
 }
 
-/**
- * @brief Changes carStatus -element class and text to offline
- */
+
+// Changes navigation bar car status to offline
 function carNotActive() {
     timeout = undefined;
     carStatus.setAttribute("class", "notActive");
