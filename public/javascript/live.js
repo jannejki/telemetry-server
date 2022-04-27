@@ -23,18 +23,21 @@ let xAxisOptionArray = [10, 30, 60, 90, 120, 180];
 
 /**
  * @constructor
- * Constructor function for object that will handle all communicating between server and client.
+ * Constructor function for object that will
+ *  handle all communicating between server and client.
  */
 function ServerInterface() {
     this.idArray = { "canID": [] };
     this.interval = undefined;
     this.latestMessage = undefined;
     this.intervaltime = 2000;
+
     // Creating socket
     const liveSocket = io();
     const liveChannel = 'live';
 
-    // Adds new canID to a array that is sent to server to ask the latest messages from the
+    // Adds new canID to a array that is sent 
+    // to server to ask the latest messages from the
     // can ids that are in array. 
     this.addNewId = function(canID) {
         this.idArray["canID"].push({ can: canID })
@@ -69,16 +72,7 @@ function ServerInterface() {
                     return this.latestMessage[i];
                 }
             }
-            console.warn("can't find data with ID:", canID);
-            return [{
-                "ID": undefined,
-                "canID": canID,
-                "data": 0,
-                "timestamp": undefined,
-                "DLC": undefined,
-                "name": undefined
-            }]
-
+            throw `Can't find data with id: ${canID}`;
         } catch (error) {
             console.warn(error);
             return [{
@@ -99,25 +93,35 @@ function ServerInterface() {
 const serverInterface = new ServerInterface();
 
 window.onload = () => {
+    fillCanDropDownList();
     let timeDropDown = document.getElementById("xAxis");
-    fetch('/settings/loadCanList')
-        .then(response => response.json())
-        .then((data) => {
-            for (let i = 0; i < data.canList.length; i++) {
-                let option = document.createElement("option");
-                option.setAttribute("value", data.canList[i].canID);
-                option.innerText = data.canList[i].name;
-                document.getElementById("canDropDown").appendChild(option);
-            }
-        })
-
     for (let i = 0; i < 6; i++) {
-        let option = document.createElement("option");
-        option.setAttribute("value", xAxisOptionArray[i]);
-        option.innerHTML = xAxisOptionArray[i] + " sec";
-        timeDropDown.appendChild(option);
+        timeDropDown.innerHTML = `${timeDropDown.innerHTML}
+                                 <option value="${xAxisOptionArray[i]}">
+                                    ${xAxisOptionArray[i]} sec
+                                 </option>`;
     }
 }
+
+const fillCanDropDownList = async() => {
+    const query = `query CanNodes($rules: Boolean) {
+        canNodes(rules: $rules) {
+          name
+          canID
+        }
+      }`;
+
+    const result = await fetchGQL(query);
+    const dropDownList = document.getElementById("canDropDown");
+
+    for (let i = 0; i < result.data.canNodes.length; i++) {
+        dropDownList.innerHTML = `${dropDownList.innerHTML}
+                                     <option value="${result.data.canNodes[i].canID}">
+                                        ${result.data.canNodes[i].name}
+                                    </option>`;
+    }
+}
+
 
 /**
  * Creates new chart div to "main" and creates new Chart -object to it.
@@ -214,6 +218,12 @@ function createChartElements(selectedCAN) {
     let select = document.getElementById("canDropDown");
     let selectedName = select.options[select.selectedIndex].text;
 
+    if (document.getElementById(selectedCAN) != null) {
+        alert('There is already a chart for this CAN!');
+        return;
+    }
+
+    // FIXME: Change element creation to `<div >${}</div> type` 
     // Creating Div element where all other elements will be created
     const dataDiv = document.createElement("div");
     dataDiv.setAttribute("id", document.getElementById("canDropDown").value);
@@ -292,4 +302,30 @@ function updateChart(latestMessage, chart, ticks, startTime, oneSec) {
         chart.data.labels.shift();
     }
     chart.update();
+}
+
+
+const fetchGQL = (query, variables) => {
+    return new Promise((resolve) => {
+        fetch('/graphql', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    query,
+                    variables
+                })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.errors) {
+                    alert(data.errors[0].extensions.code);
+                    return;
+                } else {
+                    resolve(data);
+                }
+            });
+    })
 }
