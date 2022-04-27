@@ -18,7 +18,6 @@ import typeDefs from './apollo/schemas/schemaIndex';
 import resolvers from './apollo/resolvers/resolverIndex';
 
 dotenv.config();
-
 const port = 3000;
 
 (async() => {
