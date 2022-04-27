@@ -6,7 +6,7 @@ const loginPage = async(req, res) => {
     if (req.isAuthenticated()) {
         res.redirect('/');
     } else {
-        res.render('login.ejs')
+        res.render('../public/views/login.ejs')
     }
 }
 
