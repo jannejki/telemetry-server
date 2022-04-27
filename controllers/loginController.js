@@ -39,14 +39,10 @@ const logout = async(req, res) => {
 }
 
 const checkAuthenticated = (req, res, next) => {
-    if (process.env.NODE_ENV == 'development') {
-        if (req.isAuthenticated()) {
-            return next();
-        }
-        res.redirect('/login');
-    } else {
+    if (req.isAuthenticated()) {
         return next();
     }
+    res.redirect('/login');
 }
 
 const checkAuthorized = (req, res, next) => {
