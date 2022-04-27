@@ -2,7 +2,7 @@
 
 const chartList = [];
 
-window.onload = () => {
+window.onload = async() => {
     //checking current date and time to preset values for user inputs
     const today = new Date();
     let year = today.getFullYear();
@@ -21,18 +21,28 @@ window.onload = () => {
     document.getElementById("hourStart").value = startHr + ":" + min;
     document.getElementById("hourEnd").value = hr + ":" + min;
 
-    // load CAN names and IDs from server to fill dropdown -list
-    fetch('/settings/loadCanList')
-        .then(response => response.json())
-        .then((data) => {
-            for (let i = 0; i < data.canList.length; i++) {
-                let option = document.createElement("option");
-                option.setAttribute("value", data.canList[i].canID);
-                option.innerText = data.canList[i].name;
-                document.getElementById("canDropDown").appendChild(option);
-            }
-        });
+    fillCanDropDownList();
 }
+
+const fillCanDropDownList = async() => {
+    const query = `query CanNodes($rules: Boolean) {
+        canNodes(rules: $rules) {
+          name
+          canID
+        }
+      }`;
+
+    const result = await fetchGQL(query);
+    const dropDownList = document.getElementById("canDropDown");
+
+    for (let i = 0; i < result.data.canNodes.length; i++) {
+        dropDownList.innerHTML = `${dropDownList.innerHTML}
+                                     <option value="${result.data.canNodes[i].canID}">
+                                        ${result.data.canNodes[i].name}
+                                    </option>`;
+    }
+}
+
 
 /**
  * @brief adds zero in front of parameter if it is less than 10.
@@ -59,6 +69,11 @@ document.forms['addNewChartOptions'].addEventListener('submit', async(event) => 
     let date = document.getElementById("date").value;
     let hourStart = document.getElementById("hourStart").value;
     let hourEnd = document.getElementById("hourEnd").value;
+
+    if (document.getElementById(canID) != null) {
+        alert('There is already a chart for this CAN!');
+        return;
+    }
 
     // parsing start- and endtimes to the right format for server
     let startTime2 = date + " " + hourStart;

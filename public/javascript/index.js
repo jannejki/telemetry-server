@@ -10,14 +10,16 @@ window.onload = async(event) => {
 };
 
 // Get CAN node information from server.
-function getNodes() {
-    return new Promise(resolve => {
-        fetch('/settings/loadCanList')
-            .then(response => response.json())
-            .then((data) => {
-                resolve(data.canList);
-            })
-    })
+const getNodes = async() => {
+    const query = `query CanNodes($rules: Boolean) {
+        canNodes(rules: $rules) {
+          name
+          canID
+        }
+      }`;
+
+    const result = await fetchGQL(query);
+    return result.data.canNodes;
 }
 
 
@@ -37,8 +39,6 @@ function createCards(nodes) {
         dashboardDiv.appendChild(card);
         cards.push(new Card(node.canID, card));
     });
-
-    console.log(cards);
 }
 
 
@@ -57,4 +57,35 @@ const updateCard = (msg) => {
             card.updateValues(msg);
         }
     });
+}
+
+/**
+ * @brief Sends graphql query to server and returns received data
+ * @param {*} query grapqhl query
+ * @param {*} variables possible variables for query
+ * @returns {*} received data
+ */
+const fetchGQL = (query, variables) => {
+    return new Promise((resolve) => {
+        fetch('/graphql', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    query,
+                    variables
+                })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.errors) {
+                    alert(data.errors[0].extensions.code);
+                    return;
+                } else {
+                    resolve(data);
+                }
+            });
+    })
 }

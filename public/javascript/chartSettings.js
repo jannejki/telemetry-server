@@ -14,7 +14,7 @@ function ChartSettings() {
         responsive: true,
         maintainAspectRatio: false,
         animation: false,
-        lineTension: 0.4,
+        lineTension: 0.0,
         elements: {
             point: {
                 radius: 0
