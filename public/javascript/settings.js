@@ -154,62 +154,68 @@ function changeDbcFile(filename) {
 /**
  * @brief refreshes can table to show the CAN ids that are in the active dbc file
  */
-function refreshCanTable() {
-
+const refreshCanTable = async() => {
     // creating header row
     let table = document.getElementById("canTable");
+    table.innerHTML = `<tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                       <tr>`;
     let tr = document.createElement("tr");
 
-    let idTh = document.createElement("th");
-    let nameTh = document.createElement("th");
+    // Getting CAN names and IDs from server
+    const canList = await getNodes();
 
-    idTh.innerHTML = "ID";
-    nameTh.innerHTML = "Name";
-    tr.appendChild(idTh);
-    tr.appendChild(nameTh);
+    // creating new row for every CAN
+    for (let i = 0; i < canList.length; i++) {
+        table.innerHTML = `${table.innerHTML}
+                            <tr>
+                                <td>${canList[i].canID}</td>
+                                <td>${canList[i].name}</td>
+                            </tr>`;
+    }
+}
 
-    // clearing table before appending header row in it
-    table.innerHTML = "";
-    table.appendChild(tr);
+// Get CAN node information from server.
+const getNodes = async() => {
+    const query = `query CanNodes($rules: Boolean) {
+        canNodes(rules: $rules) {
+          name
+          canID
+        }
+      }`;
 
-    // send request to get the can names and ids from the active dbc file
-    fetch('/settings/loadCanList')
-        .then(response => response.json())
-        .then((data) => {
-
-            // creating new row for every can
-            for (let i = 0; i < data.canList.length; i++) {
-                let tr = document.createElement("tr");
-                let IDtd = document.createElement("td");
-                let nametd = document.createElement("td");
-
-                IDtd.innerHTML = data.canList[i].canID;
-                nametd.innerHTML = data.canList[i].name;
-
-                tr.appendChild(IDtd);
-                tr.appendChild(nametd);
-
-                table.appendChild(tr);
-            }
-        })
+    const result = await fetchGQL(query);
+    return result.data.canNodes;
 }
 
 /**
- * @deprecated 24.1.2022
- * @param {*} canID 
- * @returns void
+ * @brief Sends graphql query to server and returns received data
+ * @param {*} query grapqhl query
+ * @param {*} variables possible variables for query
+ * @returns {*} received data
  */
-async function deleteCan(canID) {
-    if (!confirm("Are you sure?")) return;
-    await fetch('/deleteCan', {
-        method: 'delete',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ CANID: canID })
-    }).then(response => {
-        if (response.status === 500) alert("something went wrong!");
-        if (response.status === 204) alert("file removed from database!");
+const fetchGQL = (query, variables) => {
+    return new Promise((resolve) => {
+        fetch('/graphql', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    query,
+                    variables
+                })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.errors) {
+                    alert(data.errors[0].extensions.code);
+                    return;
+                } else {
+                    resolve(data);
+                }
+            });
     })
-    refreshCanTable();
 }

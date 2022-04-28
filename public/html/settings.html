@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telemetry</title>
-    <link href="./CSS/navBar.css" rel="stylesheet">
-    <link href="./CSS/settings.css" rel="stylesheet">
+    <link href="../CSS/navBar.css" rel="stylesheet">
+    <link href="../CSS/settings.css" rel="stylesheet">
 </head>
 
 <body>
@@ -29,42 +29,44 @@
           <i class="fa fa-caret-down"></i>
         </button>
             <div class="dropdown-content">
+                <a href="/login/logout?_method=DELETE" style="background-color:rgb(136, 0, 0)">Log out</a>
                 <a href="/">Dashboard</a>
                 <a href="live">Live</a>
                 <a href="history">History</a>
                 <a href="converter">Converter</a>
-                <a href="settings">Settings</a>
-                <a href="/login/logout?_method=DELETE">Log out</a>
+                <a href="#" id="settingsNav">Settings &#x2193;</a>
+                <div class="settings-content">
+                    <a href="settings">DBC</a>
+                    <a href="/users">new User</a>
+                </div>
             </div>
         </div>
     </div>
 
     <main>
-        <div id="formDiv">
-
-            <form action="settings/uploadDBC" method="POST" enctype="multipart/form-data" id="newDBCFileForm" class="settingsForm">
-                <div class="row">
-                    <label for="canID">Upload file:</label><br>
-                    <input type="file" name="dbcFile" id="dbcFileInput" required>
-                </div>
-                <input type="submit">
-            </form>
+        <div>
+            <div id="formDiv">
+                <form action="settings/uploadDBC" method="POST" enctype="multipart/form-data" id="newDBCFileForm" class="settingsForm">
+                    <div class="row">
+                        <label for="canID">Upload file:</label><br>
+                        <input type="file" name="dbcFile" id="dbcFileInput" required>
+                    </div>
+                    <input type="submit">
+                </form>
+            </div>
+            <table id="fileTable" class="dataTable">
+                <tr>
+                    <th>Name</th>
+                    <th>Delete</th>
+                </tr>
+            </table>
         </div>
-        <table id="fileTable" class="dataTable">
-            <tr>
-                <th>Name</th>
-                <th>Delete</th>
-            </tr>
-        </table>
-
-        <!-- is this useless? 19.1.2022 -->
         <table id="canTable" class="dataTable">
             <tr>
                 <th>Id</th>
                 <th>Name</th>
             </tr>
         </table>
-        -
     </main>
     <script src="/socket.io/socket.io.js"></script>
     <script src="./javascript/navBar.js"></script>

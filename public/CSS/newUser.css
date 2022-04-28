@@ -1,0 +1,16 @@
+table {
+    border-style: solid;
+    border-color: black;
+    border-width: 2px;
+}
+
+table th,
+td {
+    width: 33%;
+    text-align: center;
+    padding: 0.5em;
+}
+
+tr:nth-child(odd) {
+    background-color: rgb(201, 201, 201);
+}

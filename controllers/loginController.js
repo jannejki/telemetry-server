@@ -1,6 +1,5 @@
 'user strict';
-import { newUser as createNewUSer } from '../utils/newUser.js';
-process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+import path from 'path';
 
 const loginPage = async(req, res) => {
     if (req.isAuthenticated()) {
@@ -16,20 +15,6 @@ const loginCredentials = async(req, res) => {
         failureRedirect: '/login',
         failureFlash: true
     });
-}
-
-const newUser = async(req, res) => {
-    res.render('newUser');
-}
-
-const addNewUser = async(req, res) => {
-    try {
-        await createNewUser(req.body);
-        res.sendStatus(200);
-    } catch (err) {
-        console.log('addNewUser', err);
-        res.sendStatus(500);
-    }
 }
 
 const logout = async(req, res) => {
@@ -54,4 +39,4 @@ const checkAuthorized = (req, res, next) => {
 }
 
 
-export { loginPage, loginCredentials, newUser, logout, addNewUser, checkAuthenticated, checkAuthorized }
+export { loginPage, loginCredentials, logout, checkAuthenticated, checkAuthorized }

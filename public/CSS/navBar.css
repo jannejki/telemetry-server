@@ -210,8 +210,8 @@ input:checked+.slider:before {
 
 .dropdown-content {
     display: none;
-    background-color: #ffffff;
     top: 10%;
+    background-color: #ffffff;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
     border-radius: 5px;
@@ -224,7 +224,7 @@ input:checked+.slider:before {
     text-align: center;
     color: #000000;
     float: none;
-    padding: 16px;
+    padding: 16px 0 16px 0;
     text-decoration: none;
     display: block;
     border-top-style: solid;
@@ -242,6 +242,41 @@ input:checked+.slider:before {
     display: block;
 }
 
+#settingsNav:hover~.settings-content {
+    display: block;
+}
+
+#settingsNav:active~.settings-content {
+    display: block;
+}
+
+.settings-content {
+    display: none;
+    box-shadow: 8px 8px 16px 0px rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    border-radius: 5px;
+}
+
+.settings-content a {
+    display: block;
+    width: 100%;
+    background-color: #b4b4b4!important;
+    text-align: center;
+    color: #000000;
+    float: none;
+    padding: 16px 0 16px 0;
+    text-decoration: none;
+    border-top-style: solid;
+    border-top-width: 1px;
+}
+
+.settings-content:hover {
+    display: block;
+}
+
+
+/* media queries for mobile screen */
+
 @media only screen and (max-width: 800px) {
     #debugSwitch {
         display: none;
@@ -257,7 +292,8 @@ input:checked+.slider:before {
         margin: 0 0 0 0;
         right: 0;
     }
-    .dropdown-content {
+    .dropdown-content,
+    .settings-content {
         margin: 0 0 0 auto;
         width: 100%;
         right: 0;
@@ -278,7 +314,8 @@ input:checked+.slider:before {
         right: 0;
         min-width: 1px;
     }
-    .dropdown-content {
+    .dropdown-content,
+    .settings-content {
         margin: 0 0 0 auto;
         width: 100%;
         right: 0;

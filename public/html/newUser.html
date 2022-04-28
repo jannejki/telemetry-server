@@ -3,15 +3,16 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telemetry</title>
     <link href="./CSS/navBar.css" rel="stylesheet">
-    <link href="./CSS/index.css" rel="stylesheet">
+    <link href="./CSS/newUser.css" rel="stylesheet">
 </head>
 
 <body>
     <div id="navbar">
-        <img id="logo" src="./images/logoWhite.png" />
+        <img id="logo" src="images/logoWhite.png" />
         <div id="debugSwitch">
             <label class="label">Debug</label>
             <label class="switch">
@@ -20,10 +21,9 @@
             </label>
         </div>
         <h1>Telemetry server</h1>
-        <div id="carStatus" class="active">
-            <p>online</p>
+        <div id="carStatus" class="">
+            <p></p>
         </div>
-
         <div class="dropdown">
             <button class="dropbtn">Menu 
           <i class="fa fa-caret-down"></i>
@@ -43,14 +43,36 @@
         </div>
     </div>
     <main>
-        <div id="dashboard">
+        <div>
+            <h1>create new user</h1>
+            <form>
+                <label for="user">user</label>
+                <input type="text" id="user" name="username" required>
+                <label for="password">password</label>
+                <input type="password" id="password" name="password" required>
+                <label for="admin">admin rights:</label>
+                <input type="checkbox" id="admin" name="admin" value="true">
+                <button type="submit">submit</button>
+            </form>
+        </div>
 
+        <div>
+            <h1>delete user</h1>
+            <table id="usersTable">
+                <tr>
+                    <th>Username</th>
+                    <th>admin</th>
+                    <th>Delete</th>
+                    <th>Change password</th>
+
+                </tr>
+            </table>
         </div>
     </main>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="../javascript/navBar.js"></script>
-    <script src="./javascript/cards.js"></script>
-    <script src="./javascript/index.js"></script>
+
 </body>
+
+<script src="./javascript/newUser.js">
+</script>
 
 </html>
