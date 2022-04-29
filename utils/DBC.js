@@ -1,12 +1,14 @@
+'use strict';
 import fs from 'fs';
 import getTimestamp from './timestamp.js';
+
 let dbcFile;
 let dbcFileName;
 
 /**
- * 
+ * @brief loads .dbc file to variable dbcFile for faster use
  * @param {String} wantedDbcFile 
- * @returns Name of the active dbcFile or { error } if not successful
+ * @returns {{activeDbc: dbcFileName}} Name of the active dbcFile or { error } if not successful
  */
 const loadDbcFile = (wantedDbcFile) => {
     return new Promise((resolve) => {
@@ -26,17 +28,19 @@ const loadDbcFile = (wantedDbcFile) => {
     })
 }
 
+
 /**
- * 
+ * @brief returns name of the active dbc file
  * @returns {String} Name of the active dbc file
  */
 const getActiveFileName = () => {
     return dbcFileName;
 }
 
+
 /**
- * 
- * @returns {array} CAN node names that are in the .dbc file
+ * @brief Reads every CAN node ID and name from active .dbc file
+ * @returns {[{canID: String, name: String}]} Array of CAN IDs and names
  */
 const getCanNames = () => {
     let decodingRules = dbcFile.split("\nBO_ ");
@@ -61,8 +65,9 @@ const getCanNames = () => {
     return names;
 }
 
+
 /**
- * 
+ * @brief Converts hexadecimal value to binary value
  * @param {String} src hexadecimal value
  * @returns {String} binary value
  */
@@ -96,8 +101,9 @@ const hexToBin = (src) => {
     return returnString;
 }
 
+
 /**
- * 
+ * @brief Converts binay value to decimal value
  * @param {String} src Binary value
  * @returns {String} Decimal value
  */
@@ -114,8 +120,9 @@ const binToDec = (src) => {
     return returnNum;
 };
 
+
 /**
- * 
+ * @brief Converts binay value to hexadecimal value
  * @param {String} src Binary value 
  * @returns {String} Hexadecimal value
  */
@@ -162,7 +169,9 @@ const binToHex = (src) => {
     return returnString;
 }
 
+
 /**
+ * @brief Converts decimal value to hexadecimal value
  * @param {String} src Decimal value 
  * @returns {String} Hexadecimal value
  */
@@ -204,10 +213,11 @@ const decToHex = (src) => {
     return returnString;
 };
 
+
 /**
  * 
  * @param {{canID:String, data: String}} message Object that contains canID and data strings
- * @returns {array.<{canID: String, name: String, data: Number, unit: String, min: String, max: String }>}
+ * @returns {[{canID: String, name: String, data: Number, unit: String, min: String, max: String }]} Physical values of message
  */
 const hexDataToPhysicalData = (message) => {
     const rules = getDecodingRules(message.canID);
@@ -269,10 +279,11 @@ const hexDataToPhysicalData = (message) => {
     return valueArray;
 }
 
+
 /**
  * @brief Gets decoding rules for selected CAN node from dbcFile
- * @param {String} canID
- * @returns {array<{ name: String, startBit: Number, length: Number, endian: Number, scale: Number, offset: Number, min: Number, max: Number, unit: Number }>}  
+ * @param {String} canID finds decoding rules for this CAN ID
+ * @returns {[{ name: String, startBit: Number, length: Number, endian: Number, scale: Number, offset: Number, min: Number, max: Number, unit: Number }]} Decoding rules found from .dbc file
  */
 const getDecodingRules = (canID) => {
     let index1, index2;
@@ -357,35 +368,38 @@ const getDecodingRules = (canID) => {
 /**
  * @brief Splits hexadecimal messages to json objects that contains canID, message length and data in hexadecimal value.
  * @param {String} message Hexadecimal string from car
- * @returns Array of json objects
+ * @returns {[{canID: String, DLC: Number, data: String, timestamp: String}]} Array of the objects, each object holds indiviudal canID message from car
  */
 const parseMessage = (message) => {
     const byteArray = [];
     const messageArray = [];
     const timestamp = getTimestamp();
 
+    // Split message to bytes
     for (let i = 0; i < message.length; i += 2) {
         byteArray.push([message[i], message[i + 1]]);
     }
 
     try {
         while (byteArray.length > 0) {
+            // get first two bytes from array and convert them to can ID 
             let canID = (byteArray[0].concat(byteArray[1])).join("");
             canID = hexToBin(canID);
             canID = binToDec(canID);
 
+            // Get next byte for DLC (tells how long data part is)
             let dlc = byteArray[2].join("");
             dlc = hexToBin(dlc);
             dlc = binToDec(dlc);
 
             byteArray.splice(0, 3);
 
+            // Get as many data bytes from message as dlc tells
             let data = "";
             for (let i = 0; i < dlc; i++) {
                 data += byteArray[0].join("").toUpperCase();;
                 byteArray.splice(0, 1);
             }
-
             messageArray.push({ canID: canID.toString(), DLC: dlc, data: data, timestamp: timestamp });
         }
         return messageArray;
@@ -394,5 +408,6 @@ const parseMessage = (message) => {
         return ({ error: error })
     }
 }
+
 
 export { parseMessage, hexDataToPhysicalData, getCanNames, loadDbcFile, getActiveFileName, getDecodingRules }

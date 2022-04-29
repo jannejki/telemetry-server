@@ -15,7 +15,6 @@ const calculateValue = (req, res) => {
 }
 
 const saveData = async(parsedMessage) => {
-
     parsedMessage.forEach(async(msg) => {
         const realDatas = calculate(msg);
         const dataValueModels = await Promise.all(

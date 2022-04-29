@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @brief Gets timestamp from the time that function is called
+ * @returns {String} timestamp "2022-04-09 09:02:012"
+ */
 const getTimestamp = () => {
     const today = new Date();
     let year = today.getFullYear();
@@ -22,11 +26,17 @@ const getTimestamp = () => {
 }
 
 
+/**
+ * @Brief adds 0 in front of param i if i < 10
+ * @param {Number} i Value that needs to be checked
+ * @returns {String} param i but added 0 in front if i < 10
+ */
 const checkTime = (i) => {
     if (i < 10) {
         i = "0" + i
     };
     return i;
 }
+
 
 export default getTimestamp;
