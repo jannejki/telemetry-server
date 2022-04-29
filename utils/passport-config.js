@@ -27,7 +27,9 @@ const serialize = (user, done) => {
 };
 
 const deserialize = (async(id, done) => {
-    return done(null, await User.findById(id._id));
+    const user = await User.findById(id._id);
+    user.password = undefined;
+    return done(null, user);
 })
 
 export { localStrategy, serialize, deserialize }

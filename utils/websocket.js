@@ -3,30 +3,52 @@
 import { Server } from 'socket.io';
 import dataPointModel from '../apollo/models/dataPointModel';
 import { calculateValue } from '../controllers/dbcFileController';
+import passport from 'passport';
 
+const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
+
+let carStatus = false;
+let statusTimeout = undefined;
 let io;
-const startWs = (server) => {
+
+const startWs = (server, session) => {
     io = new Server(server);
-    io.on('connection', async(socket) => {
-        const result = await dataPointModel.find().sort({ _id: -1 }).limit(1);
-        const latestMessage = new Date(result[0].timestamp);
-        const now = new Date();
 
-        if (Math.abs(now.getTime() - latestMessage.getTime()) > 5000) {
-            sendCarStatus(true);
+    io.use(wrap(session));
+    io.use(wrap(passport.initialize()));
+    io.use(wrap(passport.session()));
+
+    io.use((socket, next) => {
+        if (socket.request.user) {
+            next();
         } else {
-            sendCarStatus(false);
+            next(new Error('unauthorized'))
         }
+    });
 
+    io.on('connection', async(socket) => {
+        sendCarStatus();
         socket.on('disconnect', () => {});
     });
 }
 
+
 const sendCarStatus = async() => {
-    io.emit('carStatus', { carStatus: false });
+    io.emit('carStatus', { carStatus });
 }
 
 const sendLiveData = (parsedMessage) => {
+    carStatus = true;
+
+    if (statusTimeout != undefined) {
+        clearTimeout(statusTimeout);
+    }
+    statusTimeout = setTimeout((() => {
+        carStatus = false;
+        sendCarStatus();
+    }), 10000);
+
+
     let dataArray = [];
     for (let i in parsedMessage) {
         let calculatedValue = calculateValue(parsedMessage[i]);

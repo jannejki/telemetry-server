@@ -1,6 +1,7 @@
 // Creating Websocket
 const socket = io();
 
+
 // Websocket channels
 const statusChannel = 'carStatus';
 const debugChannel = 'debug';
@@ -35,7 +36,7 @@ socket.on(debugChannel, (msg) => {
 
 
 // Changes navigation bar status to online
-function carActive() {
+const carActive = () => {
     // if timeout is on, clear it
     if (timeout != undefined) {
         clearTimeout(timeout);
@@ -51,7 +52,7 @@ function carActive() {
 
 
 // Changes navigation bar car status to offline
-function carNotActive() {
+const carNotActive = () => {
     timeout = undefined;
     carStatus.setAttribute("class", "notActive");
     carStatus.innerHTML = "<p>Offline</p>";

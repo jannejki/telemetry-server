@@ -1,24 +1,31 @@
 'use strict';
 import express from 'express';
-import loginRoute from './routes/loginRoute.js';
-import webRoute from './routes/webRoute.js';
-import settingsRoute from './routes/settingsRoute.js';
-import dataRoute from './routes/dataRoute.js';
-import connectMongo from './db/db.js';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import path from 'path';
 import flash from 'express-flash';
 import session from 'express-session';
 import passport from 'passport';
+import { ApolloServer } from 'apollo-server-express';
+
+import loginRoute from './routes/loginRoute.js';
+import webRoute from './routes/webRoute.js';
+import settingsRoute from './routes/settingsRoute.js';
+import dataRoute from './routes/dataRoute.js';
+import connectMongo from './db/db.js';
 import mqtt from './utils/mqtt';
 import { startWs } from './utils/websocket.js';
-import { ApolloServer } from 'apollo-server-express';
 import typeDefs from './apollo/schemas/schemaIndex';
 import resolvers from './apollo/resolvers/resolverIndex';
 
 dotenv.config();
 const port = 3000;
+
+const middlewareSession = session(({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+}));
 
 (async() => {
     try {
@@ -36,14 +43,11 @@ const port = 3000;
         app.use(bodyParser.urlencoded({ extended: true }));
         app.use(bodyParser.json());
         app.use(bodyParser.raw());
-        app.use(passport.initialize())
-        app.use(flash())
-        app.use(session({
-            secret: process.env.SESSION_SECRET,
-            resave: false,
-            saveUninitialized: false
-        }))
-        app.use(passport.session())
+        app.use(passport.initialize());
+        app.use(flash());
+        app.use(middlewareSession);
+
+        app.use(passport.session());
         app.use('/login', loginRoute);
         app.use('/', webRoute);
         app.use('/settings', settingsRoute);
@@ -71,7 +75,7 @@ const port = 3000;
         });
 
         // websocket
-        startWs(server);
+        startWs(server, middlewareSession);
 
     } catch (e) {
         console.log('server error: ' + e.message);

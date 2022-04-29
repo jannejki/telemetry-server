@@ -22,7 +22,7 @@ const settings = async(req, res) => {
 }
 
 const users = async(req, res) => {
-    res.sendFile(path.join(__dirname, '../public/html/newUser.html'));
+    res.sendFile(path.join(__dirname, '../public/html/users.html'));
 }
 
 const addNewUser = async(req, res) => {
