@@ -1,17 +1,19 @@
 'use strict';
-
 import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
 import { loadDbcFile, getCanNames, getActiveFileName, hexDataToPhysicalData, parseMessage as parse, getDecodingRules } from '../utils/DBC.js';
 import Settings from '../apollo/models/settingsModel.js';
 
-const activeFileId = "625e5c7fd9444459f400f658";
+// SettingsID from database to know what settings to load
+const settingsID = "625e5c7fd9444459f400f658";
 
 
 (async() => {
-    const settings = await Settings.findById(activeFileId);
+    // Load settings from database
+    const settings = await Settings.findById(settingsID);
     try {
+        // Load active dbc file
         const loadedFile = await loadDbcFile(settings.activeDbc);
         if (loadedFile.error) throw loadedFile.error;
         console.log('[dbcFileCtrl] Active dbc-file:', loadedFile);
@@ -45,6 +47,11 @@ const saveFile = (req, res, next) => {
 }
 */
 
+/**
+ * @brief gets file names from ../db/dbcFiles and sends array of them to client
+ * @param {*} req 
+ * @param {*} res 
+ */
 const loadFileNames = async(req, res) => {
     fs.readdir(path.join(__dirname, '../db/dbcFiles'), function(err, files) {
         //handling error
@@ -63,6 +70,12 @@ const loadFileNames = async(req, res) => {
     });
 }
 
+
+/**
+ * @brief Changes active dbc file and updates it to settings
+ * @param {*} req 
+ * @param {*} res 
+ */
 const changeActiveFile = async(req, res) => {
     const fileName = req.query.filename;
     try {
@@ -77,11 +90,23 @@ const changeActiveFile = async(req, res) => {
     }
 }
 
+
+/**
+ * @biref Gets CAN names from active dbc file
+ * @param {*} req 
+ * @param {*} res 
+ * @returns {[{canID: String, name: String}]} CAN names that are in active dbc file
+ */
 const loadCanList = (req, res) => {
     return getCanNames();
-    //res.send({ canList: getCanNames() }).status(204);
 }
 
+
+/**
+ * @brief Deletes file from db/dbcFiles/ 
+ * @param {*} req 
+ * @param {*} res 
+ */
 const deleteDbcFile = (req, res) => {
     const path = 'db/dbcFiles/' + req.body.filename;
     try {
@@ -93,20 +118,39 @@ const deleteDbcFile = (req, res) => {
     }
 }
 
+
+/**
+ * @brief Gets decoding rules for param canID
+ * @param {String} canID  
+ * @returns {[{ name: String, startBit: Number, length: Number, endian: Number, scale: Number, offset: Number, min: Number, max: Number, unit: Number }]} Decoding rules found from .dbc file
+ */
 const loadCanRules = (canID) => {
     const rules = getDecodingRules(canID);
     return rules;
 }
 
+
+/**
+ * @brief calculates raw Data to real values
+ * @param {{canID:String, data: String}} rawData Object that contains canID and data strings
+ * @returns {[{canID: String, name: String, data: Number, unit: String, min: String, max: String }]} Real values of message
+ */
 const calculateValue = (rawData) => {
     const realValues = hexDataToPhysicalData(rawData);
     return realValues;
 }
 
+
+/**
+ * @brief Parses car message to array of CAN node messages
+ * @param {String} carMessage hexadecimal string from car
+ * @returns {[{canID: String, DLC: Number, data: String, timestamp: String}]} Array of the objects, each object holds individual canID message from car
+ */
 const parseMessage = (carMessage) => {
     const parsedMessages = parse(carMessage);
     return parsedMessages;
 }
+
 
 // FIXME: not working yet
 const downloadDbcFile = (req, res) => {
@@ -125,5 +169,6 @@ const downloadDbcFile = (req, res) => {
         }
     })
 }
+
 
 export { loadFileNames, changeActiveFile, loadCanList, deleteDbcFile, downloadDbcFile, calculateValue, parseMessage, loadCanRules }
