@@ -13,7 +13,7 @@ import webRoute from './routes/webRoute.js';
 import settingsRoute from './routes/settingsRoute.js';
 import dataRoute from './routes/dataRoute.js';
 import connectMongo from './db/db.js';
-import mqtt from './utils/mqtt';
+import startMQTT from './utils/mqtt';
 import { startWs } from './utils/websocket.js';
 import typeDefs from './apollo/schemas/schemaIndex';
 import resolvers from './apollo/resolvers/resolverIndex';
@@ -76,6 +76,9 @@ const middlewareSession = session(({
 
         // websocket
         startWs(server, middlewareSession);
+
+        // MQTT
+        startMQTT();
 
     } catch (e) {
         console.log('server error: ' + e.message);
