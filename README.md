@@ -100,7 +100,7 @@ In History page, users can select what **CAN node** data they want to observe, a
  After selecting these, user can zoom in and out for closer inspection using **green sliders** seen under the **linechart**.
 
  ### Converter:
-<img src="./readme/Converter.png" width="75%" alt="History"/>
+<img src="./readme/converter.png" width="75%" alt="Converter"/>
 
 In converter page, users can easily convert CAN node's hexadecimal data to real physical values by selecting wanted **CAN node** and inserting **hexadecimal string**.
 
