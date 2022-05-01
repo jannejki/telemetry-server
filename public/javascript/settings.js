@@ -143,7 +143,7 @@ function changeDbcFile(filename) {
     fetch('/settings/changeDbcFile/?filename=' + filename)
         .then(response => {
             // if everything went ok, refresh tables
-            if (response.status === 204) {
+            if (response.status === 200) {
                 refreshFileTable();
                 refreshCanTable();
             }
@@ -187,35 +187,4 @@ const getNodes = async() => {
 
     const result = await fetchGQL(query);
     return result.data.canNodes;
-}
-
-/**
- * @brief Sends graphql query to server and returns received data
- * @param {*} query grapqhl query
- * @param {*} variables possible variables for query
- * @returns {*} received data
- */
-const fetchGQL = (query, variables) => {
-    return new Promise((resolve) => {
-        fetch('/graphql', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({
-                    query,
-                    variables
-                })
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.errors) {
-                    alert(data.errors[0].extensions.code);
-                    return;
-                } else {
-                    resolve(data);
-                }
-            });
-    })
 }

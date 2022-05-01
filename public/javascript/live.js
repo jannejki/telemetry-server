@@ -303,29 +303,3 @@ function updateChart(latestMessage, chart, ticks, startTime, oneSec) {
     }
     chart.update();
 }
-
-
-const fetchGQL = (query, variables) => {
-    return new Promise((resolve) => {
-        fetch('/graphql', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({
-                    query,
-                    variables
-                })
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.errors) {
-                    alert(data.errors[0].extensions.code);
-                    return;
-                } else {
-                    resolve(data);
-                }
-            });
-    })
-}

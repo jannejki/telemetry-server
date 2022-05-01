@@ -44,6 +44,7 @@
     </div>
     <main>
         <div id="addNewChart">
+            <div id="calendar"></div>
             <form method="get" action="/getHistory" class="optionsDiv" id="addNewChartOptions">
                 <div class="selectOptionsDiv">
                     <label for="canDropDown" class="optionLabel">Select CAN:</label>
@@ -69,6 +70,7 @@
 
     </main>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="./javascript/fetchGQL.js"></script>
     <script src="./javascript/navBar.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="./javascript/chartSettings.js"></script>

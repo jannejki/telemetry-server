@@ -1,7 +1,21 @@
-window.onload = () => {
-    fetch('/settings/loadCanList')
+window.onload = async() => {
+    /*fetch('/settings/loadCanList')
         .then(response => response.json())
-        .then(data => fillDropDown(data.canList));
+        .then(data => fillDropDown(data.canList));*/
+    const canList = await loadCanList();
+    fillDropDown(canList);
+}
+
+const loadCanList = async() => {
+    const query = `query CanNodes($rules: Boolean) {
+        canNodes(rules: $rules) {
+          name
+          canID
+        }
+      }`;
+
+    const result = await fetchGQL(query);
+    return result.data.canNodes;
 }
 
 /**
