@@ -5,7 +5,6 @@ import dataPointModel from '../apollo/models/dataPointModel';
 
 
 /**
- * @deprecated
  * @param {*} req 
  * @param {*} res 
  */
@@ -36,7 +35,7 @@ const saveData = async(parsedMessage) => {
         // saves dataValue objects to database
         const dataValueModels = await Promise.all(
             realDatas.map(async(data) => {
-                const result = await dataValueModel.create({ hexValue: data.hexData, decValue: data.data, unit: data.unit });
+                const result = await dataValueModel.create({ hexValue: data.hexData, decValue: data.data, unit: data.unit, name: data.name });
                 return result._id;
             })
         );

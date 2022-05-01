@@ -43,21 +43,28 @@
         </div>
     </div>
     <main>
-        <div>
+        <div class="section">
             <h1>create new user</h1>
             <form>
-                <label for="user">user</label>
-                <input type="text" id="user" name="username" required>
-                <label for="password">password</label>
-                <input type="password" id="password" name="password" required>
-                <label for="admin">admin rights:</label>
-                <input type="checkbox" id="admin" name="admin" value="true">
+                <div class="inputDiv">
+                    <label for="user">user</label>
+                    <input type="text" id="user" name="username" required>
+                </div>
+
+                <div class="inputDiv">
+                    <label for="password">password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="inputDiv">
+                    <label for="admin">admin rights:</label>
+                    <input type="checkbox" id="admin" name="admin" value="true">
+                </div>
                 <button type="submit">submit</button>
             </form>
         </div>
 
-        <div>
-            <h1>delete user</h1>
+        <div class="section">
+            <h1>manage users</h1>
             <table id="usersTable">
                 <tr>
                     <th>Username</th>

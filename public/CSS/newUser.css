@@ -1,3 +1,35 @@
+body {
+    background-color: grey;
+}
+
+main {
+    display: flex;
+}
+
+.section {
+    background-color: white;
+    width: 90%;
+    padding: 1em;
+    margin: 1em;
+    border-radius: 5px;
+    border-width: 1px;
+}
+
+.inputDiv {
+    display: flex;
+    width: 100%;
+    padding: 0.5em 0;
+}
+
+.inputDiv input {
+    margin-right: 60%;
+    margin-left: auto;
+}
+
+.inputDiv #admin {
+    margin-left: 2em;
+}
+
 table {
     border-style: solid;
     border-color: black;

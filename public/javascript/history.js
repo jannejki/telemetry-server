@@ -89,6 +89,7 @@ document.forms['addNewChartOptions'].addEventListener('submit', async(event) => 
           data {
             decValue
             unit
+            name
           }
         }
       }`;
@@ -123,7 +124,7 @@ function fillChartWithValues(dataPoints) {
         let randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
         let dataset = {
             spanGaps: true,
-            label: dataPoints[0].data[datasets].unit,
+            label: `${dataPoints[0].data[datasets].name} (${dataPoints[0].data[datasets].unit})`,
             backgroundColor: randomColor,
             borderColor: randomColor,
             borderWidth: 2,
@@ -177,7 +178,7 @@ const createChartElements = (dataPoints, selectedCAN) => {
                             <input type="range" id="max${selectedCAN}" class="range" max="${dataPoints.length}" min="1" value="${dataPoints.length}">
                         </div>`;
 
-    document.querySelector('main').appendChild(div);
+    document.querySelector('main').insertBefore(div, document.getElementById("addNewChart"));
 
     const minSlider = document.getElementById(`min${selectedCAN}`);
     const maxSlider = document.getElementById(`max${selectedCAN}`);
