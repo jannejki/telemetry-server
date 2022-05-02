@@ -1,6 +1,5 @@
 'user strict';
 import path from 'path';
-process.env.ADMIN = process.env.ADMIN || 'TRUE';
 
 const loginPage = async(req, res) => {
     if (req.isAuthenticated()) {
@@ -49,6 +48,7 @@ const checkAuthenticated = (req, res, next) => {
  * @returns next() if user has admin rights, otherwise sends http status 401 (unauthorized)
  */
 const checkAuthorized = (req, res, next) => {
+    process.env.ADMIN = process.env.ADMIN || 'TRUE';
     if (process.env.ADMIN == 'TRUE') {
         if (req.isAuthenticated() && req.user.rights) {
             return next();
