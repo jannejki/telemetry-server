@@ -300,3 +300,4 @@ connected to MQTT broker!
 Now you are ready to monitor car status! Make sure that the car sends messages to same MQTT broker and topic that you have set server to listen to.
 
 ## License
+MIT © jannejki
