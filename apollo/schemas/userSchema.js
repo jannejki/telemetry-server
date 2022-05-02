@@ -20,7 +20,6 @@ export default gql `
   type user {
       id: ID,
       username: String,
-      password: String,
       rights: Boolean
   }
 `;

@@ -17,6 +17,7 @@ import startMQTT from './utils/mqtt';
 import { startWs } from './utils/websocket.js';
 import typeDefs from './apollo/schemas/schemaIndex';
 import resolvers from './apollo/resolvers/resolverIndex';
+import { activateDBC } from './controllers/dbcFileController.js';
 
 dotenv.config();
 const port = 3000;
@@ -79,6 +80,9 @@ const middlewareSession = session(({
 
         // MQTT
         startMQTT();
+
+        // DBC
+        activateDBC();
 
     } catch (e) {
         console.log('server error: ' + e.message);

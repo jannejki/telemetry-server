@@ -11,7 +11,7 @@ const startMQTT = () => {
 
     const server = process.env.MQTT;
     const clientID = process.env.MQTT_CLIENT;
-
+    const topic = process.env.MQTT_TOPIC;
 
     const client = mqtt.connect(server, { clientID });
 
@@ -23,7 +23,7 @@ const startMQTT = () => {
 
 
     // subscribe topic
-    client.subscribe("messages");
+    client.subscribe(topic);
 
 
     // receive MQTT messages

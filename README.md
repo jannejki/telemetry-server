@@ -114,53 +114,189 @@ Because car sends hexadecimal values from CAN nodes, server must be able to read
 ### Users:
 <img src="./readme/users.png" width="75%" alt="Users"/>
 
-This page is only for the **admins**. Here admin can **create** new users or **delete** old ones. Admin can also **change passwords** for users.
+This page is only for the **admin**. Here admin can **create** or **delete users** . Admin can also **change passwords** for users.
 
 ## Tech/framework used
-TBA
+Server is built using *node.js v16.14.1*. 
+Database is *MongoDB 5.0.7-rc0 Community*.
+For Graphql API, *apollo-server-express 3.6.7* is used.
+
+All necessary frameworks and middlewares you can find in **package.json**.
 
 
-## Code Example
-### Graphql
-TBA
+## Graphql
+Telemetry server uses Graphql to query, add, delete or make modifications to data.
+Before using any of the following queries, users must first at least authenticate themselves. When reading, adding, deleting or changing password of user, you must be authorized with admin rights.
 
-~~Show what the library does as concisely as possible, developers should be able to figure out **how** your project solves their problem by looking at the code example. Make sure the API you are showing off is obvious, and that your code is short and concise.~~
+For querying car data, user can query:
+```
+query DataPoint($dataPointId:  String, $can:  String, $dlc:  String, $data:  String, $startTime:  String, $endTime:  String)  {
+	dataPoint(id:  $dataPointId, CAN:  $can, DLC:  $dlc, data:  $data, startTime:  $startTime, endTime:  $endTime)  {
+		id
+		CAN
+		DLC
+		timestamp
+		data {
+			id
+			hexValue
+			decValue
+			unit
+			name
+		}
+	}
+}
+```
+
+For individual data values: 
+```
+query DataValue($dataValueId:  String, $hexValue:  String, $decValue:  String, $unit:  String, $name:  String)  {
+	dataValue(id:  $dataValueId, hexValue:  $hexValue, decValue:  $decValue, unit:  $unit, name:  $name)  {
+		id
+		hexValue
+		decValue
+		unit
+		name
+	}
+}
+```
+
+Admin can also delete datapoints, following mutation also deletes data values of the datapoints:
+
+```
+mutation Mutation($deleteDataPointId:  ID, $can:  String, $startTime:  String, $endTime:  String)  {
+	deleteDataPoint(id:  $deleteDataPointId, CAN:  $can, startTime:  $startTime, endTime:  $endTime)  {
+		id
+		CAN
+		DLC
+		data  {
+			name
+			unit
+			hexValue
+			decValue
+			id
+		}
+	}
+}
+```
+
+Admins can query all users...
+```
+query Users($usersId:  String, $username:  String, $rights:  Boolean)  {
+	users(id:  $usersId, username:  $username, rights:  $rights)  {
+		id
+		username
+		rights
+	}
+}
+
+```
+add users...
+```
+mutation AddUser($rights:  Boolean, $password:  String, $username:  String)  {
+	addUser(rights:  $rights, password:  $password, username:  $username)  {
+		rights
+		username
+		id
+	}
+}
+```
+delete users...
+```
+mutation DeleteUser($deleteUserId:  String!)  {
+	deleteUser(id:  $deleteUserId)  {
+		rights
+		username
+		id
+	}
+}
+```
+or even change password for user:
+```
+mutation ChangePassword($changePasswordId:  String!, $password:  String!)  {
+	changePassword(id:  $changePasswordId, password:  $password)  {
+		rights
+		username
+		id
+	}
+}
+```
+
+Users can also query all CAN nodes from .dbc file:
+```
+query CanNodes($canId:  String, $name:  String)  {
+	canNodes(canID:  $canId, name:  $name)  {
+		canID
+		name
+		rules  {
+			name
+			startBit
+			length
+			endian
+			scale
+			offset
+			min
+			max
+			unit
+		}
+	}
+}
+```
+Because CAN nodes are read from active .dbc file, users are not able to delete or modify them.
 
 ## Installation
-TBA
+Installing this server happens with the following steps:
+ - Create [Mongodb database](https://www.mongodb.com/docs/launch-manage/).
+     - Create **Telemetry** database to Mongodb.
+     - Create user to Mongodb that has read/write rights to Telemetry. 
+ - Create or use MQTT broker of your choice
+- Load/Clone repository
+- Install all dependencies found in **package.json**
+- create **.env** file to ROOT folder
+   - Write to the file following things: 
+```
+# address to Mongodb database
+_URL=mongodb://xxx.xxx.xxx.xxx:port/Telemetry
 
-~~Provide step by step series of examples and explanations about how to get a development env running.~~
+# Secret word for securing sessions
+SESSION_SECRET=YourSecretWord
 
-## API Reference
-TBA
+# Salt rounds to hash passwords
+SALT=xxx
 
-~~Depending on the size of the project, if it is small and simple enough the reference docs can be added to the README. For medium size to larger projects it is important to at least provide a link to where the API reference docs live.~~
+# MQTT broker address
+MQTT=mqtt:xxx.xxx.xxx.xxx:port
 
-## Tests
-TBA
+# MQTT client name
+MQTT_CLIENT=clientName
 
-~~Describe and show how to run the tests with code examples.~~
+#MQTT topic
+MQTT_TOPIC=mqttTopic
 
-## How to use?
-TBA
+# Is admin created
+ADMIN=FALSE
+``` 
+- Start server with:
+```node start```
 
-~~If people like your project they’ll want to learn how they can use it. To do so include step by step guide to use your project.~~
+- Now you should be able to go to *[localhost:3000/users](http://localhost:3000/users)*
+    - Create admin user with admin rights by filling the form.
+    -  You should get a notification that "user has been created"
+    - **IMPORTANT:** After this, go to **.env**-file and change ```ADMIN=FALSE``` to ```ADMIN=TRUE```. This will enable admin authorization for creating new users. Remember to restart server.
+ - Next go to *[localhost:3000](http://localhost:3000)* and sign in with the admin credentials you created.
+ - Ignore *INTERNAL_SERVER_ERROR* warnings and navigate to *[settings/DBC](http://localhost:3000/settings)*
+ - upload .DBC file using form. You should get *{"status": "saved"}*.
+ - Go back to settings and you should see uploaded .dbc file. click the red **not active** to activate file. You should get an alert "Settings ID: ...". 
+ - Copy the ID and go to **.env**. Add new line: ```SETTINGS=[ID that you copied]```. This is the settings data that server uses when it restarts.
+ - Now restart server.
 
-## Contribute
-TBA
+If everything was done right, server should console log: 
+```
+Connected to database!
+Server listening port 3000
+[dbcFileCtrl] Active dbc-file: { activeDbc: [.dbc filenamae] }
+connected to MQTT broker!
+```
 
-~~Let people know how they can contribute into your project. A [contributing guideline](https://github.com/zulip/zulip-electron/blob/master/CONTRIBUTING.md) will be a big plus.~~
-
-## Credits
-
-TBA
-~~Give proper credits. This could be a link to any repo which inspired you to build this project, any blogposts or links to people who contrbuted in this project. ~~
-
-#### Anything else that seems useful
+Now you are ready to monitor car status! Make sure that the car sends messages to same MQTT broker and topic that you have set server to listen to.
 
 ## License
-TBA
-
-~~A short snippet describing the license (MIT, Apache etc)~~
-
-MIT © [jannejki]()

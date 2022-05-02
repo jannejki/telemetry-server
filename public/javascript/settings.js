@@ -138,17 +138,35 @@ function refreshFileTable() {
  * @brief changes the active dbc file
  * @param {string} filename name of the file to use
  */
-function changeDbcFile(filename) {
+const changeDbcFile = async(filename) => {
     // sends request to server to change active file
-    fetch('/settings/changeDbcFile/?filename=' + filename)
-        .then(response => {
-            // if everything went ok, refresh tables
-            if (response.status === 200) {
-                refreshFileTable();
-                refreshCanTable();
-            }
-            if (response.status === 500) alert("Something went wrong! can't change file");
-        })
+    const resp = await fetch('/settings/changeDbcFile/?filename=' + filename);
+    const json = await resp.json();
+    console.log(json);
+
+    switch (resp.status) {
+        case 201:
+            alert(`Settings ID: ${json.result._id}`);
+            break;
+        case 500:
+            alert(json.error);
+            break;
+    }
+
+    refreshFileTable();
+    refreshCanTable();
+
+    /* .then(response => {
+         console.log(response);
+         // if everything went ok, refresh tables
+         if (response.status === 204) {
+
+         }
+         if (response.status === 201) {
+             
+         }
+         if (response.status === 500) alert("Something went wrong! can't change file");
+     })*/
 }
 
 /**

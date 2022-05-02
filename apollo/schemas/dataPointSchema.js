@@ -5,6 +5,9 @@ export default gql `
       dataPoint(id: String, CAN: String,  DLC: String, data: String, startTime: String, endTime: String): [dataPoint]
   }
 
+  extend type Mutation {
+    deleteDataPoint(id: ID, CAN: String, startTime: String, endTime: String): [dataPoint]
+  }
   type dataPoint {
       id: ID,
       CAN: String,

@@ -25,7 +25,7 @@ export default {
 
     Mutation: {
         addUser: async(parent, args, context) => {
-            if (!context.user.rights) throw new ForbiddenError('UNAUTHORIZED');
+            if (!context.user.rights && process.env.ADMIN == 'TRUE') throw new ForbiddenError('UNAUTHORIZED');
 
             const createdUser = await newUser(args);
             return createdUser;

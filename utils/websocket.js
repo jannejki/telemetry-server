@@ -56,7 +56,6 @@ const sendLiveData = (parsedMessage) => {
         let calculatedValue = calculateValue(parsedMessage[i]);
         if (!calculatedValue.error) dataArray.push(calculatedValue);
     }
-    console.log(dataArray);
     io.emit('live', { latestMessage: dataArray });
 }
 

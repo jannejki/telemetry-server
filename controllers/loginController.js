@@ -49,10 +49,14 @@ const checkAuthenticated = (req, res, next) => {
  * @returns next() if user has admin rights, otherwise sends http status 401 (unauthorized)
  */
 const checkAuthorized = (req, res, next) => {
-    if (req.isAuthenticated() && req.user.rights) {
-        return next();
+    if (process.env.ADMIN == 'TRUE') {
+        if (req.isAuthenticated() && req.user.rights) {
+            return next();
+        } else {
+            res.sendStatus(401);
+        }
     } else {
-        res.sendStatus(401);
+        return next();
     }
 }
 

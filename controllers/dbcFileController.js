@@ -5,14 +5,12 @@ import path from 'path';
 import { loadDbcFile, getCanNames, getActiveFileName, hexDataToPhysicalData, parseMessage as parse, getDecodingRules } from '../utils/DBC.js';
 import Settings from '../apollo/models/settingsModel.js';
 
-// SettingsID from database to know what settings to load
-const settingsID = "625e5c7fd9444459f400f658";
 
+const activateDBC = async() => {
 
-(async() => {
-    // Load settings from database
-    const settings = await Settings.findById(settingsID);
     try {
+        // Load settings from database
+        const settings = await Settings.findById(process.env.SETTINGS);
         // Load active dbc file
         const loadedFile = await loadDbcFile(settings.activeDbc);
         if (loadedFile.error) throw loadedFile.error;
@@ -20,32 +18,7 @@ const settingsID = "625e5c7fd9444459f400f658";
     } catch (err) {
         console.log('[dbcFileCtr] ', err);
     }
-})();
-
-// FIXME: upload files here
-/*
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, '../db/dbcFiles');
-    },
-    filename: (req, file, cb) => {
-        const { originalname } = file;
-        cb(null, originalname);
-    }
-})
-
-const upload = multer({ storage })
-
-const saveFile = (req, res, next) => {
-    try {
-        upload.single(req.file);
-        res.sendStatus(200);
-    } catch (err) {
-        console.log('error: ', err);
-        res.sendStatus(500);
-    }
 }
-*/
 
 /**
  * @brief gets file names from ../db/dbcFiles and sends array of them to client
@@ -78,14 +51,22 @@ const loadFileNames = async(req, res) => {
  */
 const changeActiveFile = async(req, res) => {
     const fileName = req.query.filename;
+    console.log('changeACtive');
     try {
         const activeFile = await loadDbcFile(fileName);
         if (activeFile.error) throw activeFile.error;
 
-        await Settings.findByIdAndUpdate(activeFileId, { activeDbc: activeFile.activeDbc });
-        res.sendStatus(204);
+        const settings = await Settings.findByIdAndUpdate(process.env.SETTINGS, { activeDbc: activeFile.activeDbc });
+        if (settings == null) {
+            const result = await Settings.create({ activeDbc: activeFile.activeDbc });
+            console.log(result);
+            res.status(201).send({ result });
+        } else {
+            res.sendStatus(204);
+        }
 
     } catch (error) {
+        console.log('error');
         res.send(error).status(500);
     }
 }
@@ -171,4 +152,4 @@ const downloadDbcFile = (req, res) => {
 }
 
 
-export { loadFileNames, changeActiveFile, loadCanList, deleteDbcFile, downloadDbcFile, calculateValue, parseMessage, loadCanRules }
+export { activateDBC, loadFileNames, changeActiveFile, loadCanList, deleteDbcFile, downloadDbcFile, calculateValue, parseMessage, loadCanRules }

@@ -89,7 +89,14 @@ document.querySelector('form').addEventListener('submit', (event) => {
             })
         })
         .then(r => r.json())
-        .then(data => console.log('data returned:', data));
+        .then(data => {
+            console.log('data returned:', data);
+            if (data.data.addUser.id) {
+                alert('User created!');
+            } else {
+                alert('Can not create user!');
+            }
+        });
 })
 
 const fetchGQL = (query, variables) => {

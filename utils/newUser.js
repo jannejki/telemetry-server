@@ -12,7 +12,7 @@ const newUser = async(cred) => {
     return new Promise(async(resolve) => {
         try {
             bcrypt.hash(cred.password, parseInt(process.env.SALT), async(err, hash) => {
-                const admin = cred.admin || false;
+                const admin = cred.rights || false;
                 const result = await User.create({ username: cred.username, password: hash, rights: admin });
                 resolve(result);
             });
