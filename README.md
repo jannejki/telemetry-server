@@ -16,6 +16,7 @@ Car sends data through MQTT broker, so server must listen to that.
 For converting data, it is little more complicated. because data is sent in hexadecimal format from CAN node, this needs to be converted using **.dbc file.**
 This file contains information and "decoding rules" for CAN data. Server has DBCParser that will handle this converting.
 
+------------------------------------------------------
 ### **database**
 
 It is wise to save data to database, so server uses Mongodb -database for that. Mongodb has a **datapoint** collection for saving datapoints using **dataPointModel**:
@@ -56,7 +57,8 @@ When server restarts, it reads the filename and knows what file it needs to acti
     activeDbc: { type: String, required: true },
 }
  ```
-
+ 
+---------------------------------------------------------------
  ### **Graphql API**
 
 Server has Graphql api implemented. this is used to access database from client side.
@@ -179,6 +181,7 @@ query CanNodes($canId:  String, $name:  String)  {
 ```
 Because CAN nodes are read from active .dbc file, users are not able to delete or modify them.
 
+-----------------------------------------------------------------------
 ### **Websocket**
 When monitoring livedata, it is important for users to get new data as soon as possible. For this, server uses websockets. Server uses different websocket channels for sending different data:
 - **debug** channel sends car data in the same format it has been received. If for any reasons data is corrupted, this channel also sends error messages.
@@ -187,6 +190,7 @@ When monitoring livedata, it is important for users to get new data as soon as p
 
 Websocket also has authentication methods implemented, for refusing non-wanted access.
 
+------------------------------------------------------------------------
 ### **Client**
 Server has client-side where team members can monitor car and access database. Here are instructions for the client:
 
@@ -233,6 +237,7 @@ Because car sends hexadecimal values from CAN nodes, server must be able to read
 
 This page is only for the **admin**. Here admin can **create** or **delete users** . Admin can also **change passwords** for users.
 
+--------------------------------------------------------------------------
 ## Tech/framework used
 Server is built using *node.js v16.14.1*. 
 Database is *MongoDB 5.0.7-rc0 Community*.
@@ -240,6 +245,7 @@ For Graphql API, *apollo-server-express 3.6.7* is used.
 
 All necessary frameworks and middlewares you can find in **package.json**.
 
+--------------------------------------------------------------------
 ## Installation
 Installing this server happens with the following steps:
  - Create [Mongodb database](https://www.mongodb.com/docs/launch-manage/).
@@ -281,7 +287,7 @@ ADMIN=FALSE
     - **IMPORTANT:** After this, go to **.env**-file and change ```ADMIN=FALSE``` to ```ADMIN=TRUE```. This will enable admin authorization for creating new users. Remember to restart server.
  - Next go to *[localhost:3000](http://localhost:3000)* and sign in with the admin credentials you created.
  - Ignore *INTERNAL_SERVER_ERROR* warnings and navigate to *[settings/DBC](http://localhost:3000/settings)*
- - upload .DBC file using form. You should get *{"status": "saved"}*.
+ - upload .DBC file using form. You should get ```{"status": "saved"}```.
  - Go back to settings and refresh page, then you should see uploaded .dbc file. click the red **not active** to activate file. You should get an alert "Settings ID: ...". 
  - Copy the ID and go to **.env**. Add new line: ```SETTINGS=[ID that you copied]```. This is the settings data that server uses when it restarts.
  - Now restart server.
@@ -290,7 +296,7 @@ If everything was done right, server should console log:
 ```
 Connected to database!
 Server listening port 3000
-[dbcFileCtrl] Active dbc-file: { activeDbc: [.dbc filenamae] }
+[dbcFileCtrl] Active dbc-file: { activeDbc: [.dbc filename] }
 connected to MQTT broker!
 ```
 
