@@ -4,9 +4,11 @@ body {
 
 main {
     display: flex;
+    flex-wrap: wrap;
 }
 
 .section {
+    text-align: center;
     background-color: white;
     width: 90%;
     padding: 1em;
@@ -16,14 +18,8 @@ main {
 }
 
 .inputDiv {
-    display: flex;
     width: 100%;
     padding: 0.5em 0;
-}
-
-.inputDiv input {
-    margin-right: 60%;
-    margin-left: auto;
 }
 
 .inputDiv #admin {

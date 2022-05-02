@@ -60,73 +60,9 @@ When server restarts, it reads the filename and knows what file it needs to acti
  ### **Graphql API**
 
 Server has Graphql api implemented. this is used to access database from client side.
+
 **NOTE**: Before accessing any data, user must be authenticated.
-
-### **Websocket**
-When monitoring livedata, it is important for users to get new data as soon as possible. For this, server uses websockets. Server uses different websocket channels for sending different data:
-- **debug** channel sends car data in the same format it has been received. If for any reasons data is corrupted, this channel also sends error messages.
- - **carStatus** channel sends car status. When server's MQTT client notices that new message is arrived, websocket sends notification that car is online. It does not matter if message is corrupted. If no messages has been received from car after 10 seconds, then notification is sent that car is offline.
-  - **live** channel sends live data to clients. This contains real physical values of the car message and these real values are then displayed for user.
-
-Websocket also has authentication methods implemented, for refusing non-wanted access.
-
-### **Client**
-Server has client-side where team members can monitor car and access database. Here are instructions for the client:
-
-### log in:
-<img src="./readme/login.png" width="75%" alt="log in"/>
-
-Before accessing page and data, users must authenticate themselves.
-
-### Dashboard:
-<img src="./readme/dashboard.png" width="75%" alt="dashboard"/>
-
-This is the page users see when they log in. On top of the screen you can see navigation bar, that has a **debug switch**, which will log every car message and possible errors to browsers console. On right side, there is a **car status** that will show if car has sent any messages in the past 10 seconds. If not, it will be red and say *offline*. From **Menu**, user can navigate through the page or log out.
-
- From dashboard user can monitor every CAN node and see the latest value it has sent. If **card** is green, node is working correctly, when it is yellow, then there is a fault. Text color shows what value is faulty: Red means fault, black means that it is okay.
-
-
-### Live:
-<img src="./readme/live.png" width="75%" alt="live"/>
-
-In live user can monitor selected CAN node's values in a **linechart**. User can select **CAN node**, and how long the **X-axis** is: 10, 30, 60, 90, 120 or 180 seconds.
-
-### History:
-<img src="./readme/history.png" width="75%" alt="History"/>
-
-Since server can save data to database, it makes sence that team can observe that data.
-In History page, users can select what **CAN node** data they want to observe, and from what **date** and **time**.
-
- After selecting these, user can zoom in and out for closer inspection using **green sliders** seen under the **linechart**.
-
- ### Converter:
-<img src="./readme/converter.png" width="75%" alt="Converter"/>
-
-In converter page, users can easily convert CAN node's hexadecimal data to real physical values by selecting wanted **CAN node** and inserting **hexadecimal string**.
-
-### DBC Settings:
-<img src="./readme/dbcSettings.png" width="75%" alt="dbcSettings"/>
-
-Because car sends hexadecimal values from CAN nodes, server must be able to read **.dbc files**. From this page users can observer what .dbc files are uploaded to server, and see what **CAN nodes** are included in the active .dbc file. 
-
-**NOTE:** Only users with admin authorities are able to **upload**, **delete** or **change active** files.
-
-### Users:
-<img src="./readme/users.png" width="75%" alt="Users"/>
-
-This page is only for the **admin**. Here admin can **create** or **delete users** . Admin can also **change passwords** for users.
-
-## Tech/framework used
-Server is built using *node.js v16.14.1*. 
-Database is *MongoDB 5.0.7-rc0 Community*.
-For Graphql API, *apollo-server-express 3.6.7* is used.
-
-All necessary frameworks and middlewares you can find in **package.json**.
-
-
-## Graphql
-Telemetry server uses Graphql to query, add, delete or make modifications to data.
-Before using any of the following queries, users must first at least authenticate themselves. When reading, adding, deleting or changing password of user, you must be authorized with admin rights.
+When reading, adding, deleting or changing password of users, user must be authorized with admin rights.
 
 For querying car data, user can query:
 ```
@@ -242,6 +178,67 @@ query CanNodes($canId:  String, $name:  String)  {
 }
 ```
 Because CAN nodes are read from active .dbc file, users are not able to delete or modify them.
+
+### **Websocket**
+When monitoring livedata, it is important for users to get new data as soon as possible. For this, server uses websockets. Server uses different websocket channels for sending different data:
+- **debug** channel sends car data in the same format it has been received. If for any reasons data is corrupted, this channel also sends error messages.
+ - **carStatus** channel sends car status. When server's MQTT client notices that new message is arrived, websocket sends notification that car is online. It does not matter if message is corrupted. If no messages has been received from car after 10 seconds, then notification is sent that car is offline.
+  - **live** channel sends live data to clients. This contains real physical values of the car message and these real values are then displayed for user.
+
+Websocket also has authentication methods implemented, for refusing non-wanted access.
+
+### **Client**
+Server has client-side where team members can monitor car and access database. Here are instructions for the client:
+
+### log in:
+<img src="./readme/login.png" width="75%" alt="log in"/>
+
+Before accessing page and data, users must authenticate themselves.
+
+### Dashboard:
+<img src="./readme/dashboard.png" width="75%" alt="dashboard"/>
+
+This is the page users see when they log in. On top of the screen you can see navigation bar, that has a **debug switch**, which will log every car message and possible errors to browsers console. On right side, there is a **car status** that will show if car has sent any messages in the past 10 seconds. If not, it will be red and say *offline*. From **Menu**, user can navigate through the page or log out.
+
+ From dashboard user can monitor every CAN node and see the latest value it has sent. If **card** is green, node is working correctly, when it is yellow, then there is a fault. Text color shows what value is faulty: Red means fault, black means that it is okay.
+
+
+### Live:
+<img src="./readme/live.png" width="75%" alt="live"/>
+
+In live user can monitor selected CAN node's values in a **linechart**. User can select **CAN node**, and how long the **X-axis** is: 10, 30, 60, 90, 120 or 180 seconds.
+
+### History:
+<img src="./readme/history.png" width="75%" alt="History"/>
+
+Since server can save data to database, it makes sence that team can observe that data.
+In History page, users can select what **CAN node** data they want to observe, and from what **date** and **time**.
+
+ After selecting these, user can zoom in and out for closer inspection using **green sliders** seen under the **linechart**.
+
+ ### Converter:
+<img src="./readme/converter.png" width="75%" alt="Converter"/>
+
+In converter page, users can easily convert CAN node's hexadecimal data to real physical values by selecting wanted **CAN node** and inserting **hexadecimal string**.
+
+### DBC Settings:
+<img src="./readme/dbcSettings.png" width="75%" alt="dbcSettings"/>
+
+Because car sends hexadecimal values from CAN nodes, server must be able to read **.dbc files**. From this page users can observer what .dbc files are uploaded to server, and see what **CAN nodes** are included in the active .dbc file. 
+
+**NOTE:** Only users with admin authorities are able to **upload**, **delete** or **change active** files.
+
+### Users:
+<img src="./readme/users.png" width="75%" alt="Users"/>
+
+This page is only for the **admin**. Here admin can **create** or **delete users** . Admin can also **change passwords** for users.
+
+## Tech/framework used
+Server is built using *node.js v16.14.1*. 
+Database is *MongoDB 5.0.7-rc0 Community*.
+For Graphql API, *apollo-server-express 3.6.7* is used.
+
+All necessary frameworks and middlewares you can find in **package.json**.
 
 ## Installation
 Installing this server happens with the following steps:
