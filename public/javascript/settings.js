@@ -21,8 +21,9 @@ async function deleteDbcFile(filename) {
             },
             body: JSON.stringify({ filename: filename })
         }).then(response => {
-            if (response.status === 500) alert("something went wrong!");
-            if (response.status === 204) alert("file removed from database!");
+            if (response.status === 500) alert('something went wrong!');
+            if (response.status === 401) alert('Not Authorized!');
+            if (response.status === 204) alert('file removed from database!');
         })
         // refreshes file table
     refreshFileTable();
@@ -30,50 +31,20 @@ async function deleteDbcFile(filename) {
 
 
 /**
- * @brief downloads the dbc file for users computer
- * @param {*} filename dbc file
- */
-async function downloadDbcFile(filename) {
-    await fetch('/settings/downloadDbcFile/?filename=' + filename, {
-        method: 'get',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-    }).then(response => {
-        if (response.status === 500) alert("something went wrong!");
-        if (response.status === 204) alert("file laoded from database!");
-        console.log(response);
-    })
-}
-
-/**
  * Refreshes file table to show the dbc files and shows which file is in use. User can change
  * the active file by clicking the "inUse" element of the table.
  * @brief refreshes file table to show all the available dbc files
  */
-function refreshFileTable() {
+const refreshFileTable = () => {
     // creating table headers 
     let table = document.getElementById("fileTable");
-    let tr = document.createElement("tr");
 
-    let nameTh = document.createElement("th");
-    let downloadTh = document.createElement("th");
-    let deleteTh = document.createElement("th");
-    let inUseTh = document.createElement("th");
-
-    nameTh.innerHTML = "File";
-    downloadTh.innerHTML = "Download not working";
-    deleteTh.innerHTML = "Delete";
-    inUseTh.innerHTML = "In use (click to change)";
-
-    tr.appendChild(nameTh);
-    tr.appendChild(downloadTh);
-    tr.appendChild(deleteTh);
-    tr.appendChild(inUseTh);
-
-    // emptying the table before appending the header row
-    table.innerHTML = "";
-    table.appendChild(tr);
+    // emptying the table and creating header row
+    table.innerHTML = `<tr>
+                        <th>File</th>
+                        <th>Delete</th>
+                        <th>In use (click to change)</th>
+                      </tr>`;
 
     // Sends request to server to get all the dbc files
     fetch('settings/getDbcFiles')
@@ -87,6 +58,7 @@ function refreshFileTable() {
                 nametd.innerText = data.files[i].filename;
 
                 let deletetd = document.createElement("td");
+
                 //fixme disable button when (data.files[i].using == true)
                 deletetd.innerHTML = `<button
                                             value="delete" 
@@ -94,16 +66,6 @@ function refreshFileTable() {
                                             id="${data.files[i].filename}"
                                             onclick="deleteDbcFile(this.id)">
                                             Delete file
-                                        </button>`;
-
-
-                // creating download button to download the file
-                let downloadTd = document.createElement("td");
-                downloadTd.innerHTML = `<button
-                                            value="download"
-                                            id="${data.files[i].filename}"
-                                            onclick="downloadDbcFile(this.id)">
-                                            Download file
                                         </button>`;
 
                 // creating cell to see if file is in use
@@ -125,7 +87,6 @@ function refreshFileTable() {
 
                 // appending all cells to table
                 tr.appendChild(nametd);
-                tr.appendChild(downloadTd);
                 tr.appendChild(deletetd);
                 tr.appendChild(inUseTd);
                 table.appendChild(tr);
@@ -141,32 +102,24 @@ function refreshFileTable() {
 const changeDbcFile = async(filename) => {
     // sends request to server to change active file
     const resp = await fetch('/settings/changeDbcFile/?filename=' + filename);
-    const json = await resp.json();
-    console.log(json);
 
+    let json;
     switch (resp.status) {
         case 201:
+            json = await resp.json();
             alert(`Settings ID: ${json.result._id}`);
             break;
         case 500:
+            json = await resp.json();
             alert(json.error);
             break;
+        case 401:
+            alert('Not Authorized!');
+            return;
     }
 
     refreshFileTable();
     refreshCanTable();
-
-    /* .then(response => {
-         console.log(response);
-         // if everything went ok, refresh tables
-         if (response.status === 204) {
-
-         }
-         if (response.status === 201) {
-             
-         }
-         if (response.status === 500) alert("Something went wrong! can't change file");
-     })*/
 }
 
 /**
