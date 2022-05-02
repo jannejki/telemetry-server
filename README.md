@@ -285,7 +285,7 @@ ADMIN=FALSE
  - Next go to *[localhost:3000](http://localhost:3000)* and sign in with the admin credentials you created.
  - Ignore *INTERNAL_SERVER_ERROR* warnings and navigate to *[settings/DBC](http://localhost:3000/settings)*
  - upload .DBC file using form. You should get *{"status": "saved"}*.
- - Go back to settings and you should see uploaded .dbc file. click the red **not active** to activate file. You should get an alert "Settings ID: ...". 
+ - Go back to settings and refresh page, then you should see uploaded .dbc file. click the red **not active** to activate file. You should get an alert "Settings ID: ...". 
  - Copy the ID and go to **.env**. Add new line: ```SETTINGS=[ID that you copied]```. This is the settings data that server uses when it restarts.
  - Now restart server.
 
