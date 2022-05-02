@@ -3,6 +3,7 @@ import { newUser, getNewPassword } from "../../utils/newUser";
 import userModel from "../models/userModel";
 import { AuthenticationError, ForbiddenError } from 'apollo-server-express';
 import bcrypt from 'bcrypt';
+process.env.ADMIN = process.env.ADMIN || 'TRUE';
 
 export default {
     Query: {

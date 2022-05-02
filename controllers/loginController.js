@@ -1,6 +1,6 @@
 'user strict';
 import path from 'path';
-
+process.env.ADMIN = process.env.ADMIN || 'TRUE';
 
 const loginPage = async(req, res) => {
     if (req.isAuthenticated()) {
