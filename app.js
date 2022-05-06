@@ -7,6 +7,7 @@ import flash from 'express-flash';
 import session from 'express-session';
 import passport from 'passport';
 import { ApolloServer } from 'apollo-server-express';
+import { ApolloServerPluginLandingPageDisabled } from "apollo-server-core";
 
 import loginRoute from './routes/loginRoute.js';
 import webRoute from './routes/webRoute.js';
@@ -59,10 +60,18 @@ const middlewareSession = session(({
         const apolloServer = new ApolloServer({
             typeDefs,
             resolvers,
+            plugins: [
+                ApolloServerPluginLandingPageDisabled()
+            ],
             context: async({ req, res }) => {
-                const user = req.user || false;
-                return { user };
-            }
+                if (process.env.NODE_ENV === 'development') {
+                    return { user: true };
+                } else {
+                    console.log('context', req.user);
+                    const user = req.user || false;
+                    return { user };
+                }
+            },
         });
 
         await apolloServer.start();
