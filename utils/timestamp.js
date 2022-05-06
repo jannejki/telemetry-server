@@ -9,7 +9,7 @@ const getTimestamp = () => {
     let year = today.getFullYear();
     let month = today.getMonth() + 1;
     let day = today.getDate();
-    let hr = today.getHours();
+    let hr = today.getHours() + 2;
     let min = today.getMinutes();
     let sec = today.getSeconds();
     let ms = today.getMilliseconds();
