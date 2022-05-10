@@ -34,7 +34,7 @@ const startMQTT = () => {
         if (process.env.NODE_ENV == 'development') {
             msg = message.toString();
         } else {
-            msg = message.toString();
+            msg = message.toString('hex');
         }
 
         try {
