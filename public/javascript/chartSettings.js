@@ -26,6 +26,8 @@ function ChartSettings() {
                     autoSkip: true
                 },
 
+                suggestedMin: 0,
+
                 type: 'linear',
                 display: true,
                 position: 'left',

@@ -41,7 +41,7 @@ function Card(CAN, cardElement) {
             dataTable.innerHTML = `${dataTable.innerHTML}
                                 <tr>
                                     <td style="color: ${color}">${msg.name}</td>
-                                    <td style="color: ${color}"> ${msg.data}</td>
+                                    <td style="color: ${color}"> ${msg.data.toFixed(3)}</td>
                                 </tr>`;
         });
     };

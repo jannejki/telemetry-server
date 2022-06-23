@@ -2,7 +2,7 @@
  * @desc global variable that sets the update frequency for all interval functions. (in milliseconds)
  * @type {number}
  */
-let interval = 100; // updating charts time in milliseconds
+const interval = 100; // updating charts time in milliseconds
 /**
  * @desc global variable where latest received message is saved.
  * @type {JSON}
@@ -19,7 +19,7 @@ let lastMessage;
  * @desc global variable that contains values for the ".timeDropDown" -element options. every element represents seconds.
  * @type {number[]}
  */
-let xAxisOptionArray = [10, 30, 60, 90, 120, 180];
+const xAxisOptionArray = [10, 30, 60, 90, 120, 180];
 
 /**
  * @constructor
