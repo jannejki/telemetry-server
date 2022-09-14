@@ -10,7 +10,7 @@ import bcrypt from 'bcrypt';
  * @param {Function} done callback
  * @returns 
  */
-const localStrategy = async(username, password, done) => {
+const localStrategy = async (username, password, done) => {
     const users = await User.find({ username: username });
 
     if (users.length == 0) {
@@ -47,7 +47,7 @@ const serialize = (user, done) => {
  * @param {Function} done callback
  * @returns callback
  */
-const deserialize = (async(user, done) => {
+const deserialize = (async (user, done) => {
     const foundUser = await User.findById(user._id);
     foundUser.password = undefined;
     return done(null, foundUser);

@@ -1,4 +1,4 @@
-window.onload = async() => {
+window.onload = async () => {
     const table = document.querySelector('#usersTable');
     const query = `query Query {
                         users {
@@ -22,7 +22,7 @@ window.onload = async() => {
 }
 
 
-const changePassword = async(id) => {
+const changePassword = async (id) => {
     const pwd = prompt('Insert new password');
     if (!pwd) return;
 
@@ -43,7 +43,6 @@ const changePassword = async(id) => {
 
 async function deleteUser(id) {
     if (!confirm('Are you sure you want to delete user?')) return;
-    console.log("poistetaan", id);
     const query = `mutation Mutation($deleteUserId: String!) {
                     deleteUser(id: $deleteUserId) {
                         username
@@ -78,16 +77,16 @@ document.querySelector('form').addEventListener('submit', (event) => {
     };
 
     fetch('/graphql', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-            body: JSON.stringify({
-                query,
-                variables
-            })
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+            query,
+            variables
         })
+    })
         .then(r => r.json())
         .then(data => {
             console.log('data returned:', data);
@@ -102,16 +101,16 @@ document.querySelector('form').addEventListener('submit', (event) => {
 const fetchGQL = (query, variables) => {
     return new Promise((resolve) => {
         fetch('/graphql', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({
-                    query,
-                    variables
-                })
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+                query,
+                variables
             })
+        })
             .then(r => r.json())
             .then(data => {
                 resolve(data);

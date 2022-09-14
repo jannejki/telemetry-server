@@ -2,32 +2,32 @@
 import path from 'path';
 
 
-const index = async(req, res) => {
+const index = async (req, res) => {
     res.sendFile(path.join(__dirname, '../public/html/index.html'));
 }
 
 
-const live = async(req, res) => {
+const live = async (req, res) => {
     res.sendFile(path.join(__dirname, '../public/html/live.html'));
 }
 
 
-const history = async(req, res) => {
+const history = async (req, res) => {
     res.sendFile(path.join(__dirname, '../public/html/history.html'));
 }
 
 
-const converter = async(req, res) => {
+const converter = async (req, res) => {
     res.sendFile(path.join(__dirname, '../public/html/converter.html'));
 }
 
 
-const settings = async(req, res) => {
+const settings = async (req, res) => {
     res.sendFile(path.join(__dirname, '../public/html/settings.html'));
 }
 
 
-const users = async(req, res) => {
+const users = async (req, res) => {
     res.sendFile(path.join(__dirname, '../public/html/users.html'));
 }
 
@@ -36,12 +36,12 @@ const users = async(req, res) => {
  * @param {*} req 
  * @param {*} res 
  */
-const addNewUser = async(req, res) => {
+const addNewUser = async (req, res) => {
     try {
         await createNewUser(req.body);
         res.sendStatus(200);
     } catch (err) {
-        console.log('addNewUser', err);
+        console.log('addNewUser error: ', err);
         res.sendStatus(500);
     }
 }

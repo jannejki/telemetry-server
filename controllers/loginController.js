@@ -1,7 +1,7 @@
 'user strict';
 import path from 'path';
 
-const loginPage = async(req, res) => {
+const loginPage = async (req, res) => {
     if (req.isAuthenticated()) {
         res.redirect('/');
     } else {
@@ -10,7 +10,7 @@ const loginPage = async(req, res) => {
 }
 
 
-const loginCredentials = async(req, res) => {
+const loginCredentials = async (req, res) => {
     passport.authenticate('local', {
         successRedirect: '/',
         failureRedirect: '/login',
@@ -19,8 +19,7 @@ const loginCredentials = async(req, res) => {
 }
 
 
-const logout = async(req, res) => {
-    console.log("logout");
+const logout = async (req, res) => {
     req.logOut();
     res.redirect('/');
 }

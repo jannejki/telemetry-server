@@ -17,7 +17,7 @@ const startMQTT = () => {
 
 
     // connecting to mqtt broker
-    client.on('connect', function() {
+    client.on('connect', function () {
         console.log('connected to MQTT broker!');
     });
 
@@ -27,7 +27,7 @@ const startMQTT = () => {
 
 
     // receive MQTT messages
-    client.on('message', async function(topic, message, packet) {
+    client.on('message', async function (topic, message, packet) {
         let msg;
 
         // Car sends hexadecimal bytes, development sends strings
@@ -43,7 +43,7 @@ const startMQTT = () => {
             await saveData(parsedMessage);
             sendDebugMessage({ error: null, received: msg });
         } catch (error) {
-            console.log("message is corrupted!", error);
+            console.log("message from car is corrupted!", error);
             sendDebugMessage({ error: error, received: msg });
         }
     });

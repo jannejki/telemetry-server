@@ -12,7 +12,7 @@ let dbcFileName;
  */
 const loadDbcFile = (wantedDbcFile) => {
     return new Promise((resolve) => {
-        fs.readFile('db/dbcFiles/' + wantedDbcFile, 'utf8', async(err, data) => {
+        fs.readFile('db/dbcFiles/' + wantedDbcFile, 'utf8', async (err, data) => {
             try {
                 if (err) {
                     throw err;
@@ -404,7 +404,7 @@ const parseMessage = (message) => {
         }
         return messageArray;
     } catch (error) {
-        console.log(error);
+        console.log('parseMessage: ', error);
         return ({ error: error })
     }
 }

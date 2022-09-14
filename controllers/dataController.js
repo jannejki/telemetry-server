@@ -9,7 +9,6 @@ import dataPointModel from '../apollo/models/dataPointModel';
  * @param {*} res 
  */
 const getHistory = (req, res) => {
-    console.log('getHistory');
     res.sendStatus(204);
 }
 
@@ -19,7 +18,6 @@ const getHistory = (req, res) => {
  * @param {*} res 
  */
 const calculateValue = (req, res) => {
-    console.log('dataController');
     let values = calculate(req.query);
     res.send({ value: values }).status(204);
 }
@@ -28,13 +26,13 @@ const calculateValue = (req, res) => {
  * @brief Saves messages from car to database
  * @param {[{canID: String, DLC: Number, data: String, timestamp: String}]} parsedMessage Array of message objects
  */
-const saveData = async(parsedMessage) => {
-    parsedMessage.forEach(async(msg) => {
+const saveData = async (parsedMessage) => {
+    parsedMessage.forEach(async (msg) => {
         const realDatas = calculate(msg);
 
         // saves dataValue objects to database
         const dataValueModels = await Promise.all(
-            realDatas.map(async(data) => {
+            realDatas.map(async (data) => {
                 const result = await dataValueModel.create({ hexValue: data.hexData, decValue: data.data, unit: data.unit, name: data.name });
                 return result._id;
             })

@@ -30,6 +30,7 @@ socket.on(statusChannel, (msg) => {
 socket.on(debugChannel, (msg) => {
     carActive();
     if (document.getElementById('debug').checked) {
+        // print received message to console
         console.log(msg);
     }
 });

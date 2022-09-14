@@ -29,7 +29,7 @@ const middlewareSession = session(({
     saveUninitialized: false,
 }));
 
-(async() => {
+(async () => {
     try {
         const conn = await connectMongo();
         if (conn) {
@@ -63,11 +63,10 @@ const middlewareSession = session(({
             plugins: [
                 ApolloServerPluginLandingPageDisabled()
             ],
-            context: async({ req, res }) => {
+            context: async ({ req, res }) => {
                 if (process.env.NODE_ENV === 'development') {
                     return { user: true };
                 } else {
-                    console.log('context', req.user);
                     const user = req.user || false;
                     return { user };
                 }

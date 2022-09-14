@@ -6,7 +6,7 @@ import { loadDbcFile, getCanNames, getActiveFileName, hexDataToPhysicalData, par
 import Settings from '../apollo/models/settingsModel.js';
 
 
-const activateDBC = async() => {
+const activateDBC = async () => {
 
     try {
         // Load settings from database
@@ -25,8 +25,8 @@ const activateDBC = async() => {
  * @param {*} req 
  * @param {*} res 
  */
-const loadFileNames = async(req, res) => {
-    fs.readdir(path.join(__dirname, '../db/dbcFiles'), function(err, files) {
+const loadFileNames = async (req, res) => {
+    fs.readdir(path.join(__dirname, '../db/dbcFiles'), function (err, files) {
         //handling error
         if (err) {
             return console.log('[dbcFileCtrl] Unable to scan directory: ' + err);
@@ -34,7 +34,7 @@ const loadFileNames = async(req, res) => {
         const fileArray = [];
 
         //listing all files using forEach
-        files.forEach(function(file) {
+        files.forEach(function (file) {
             if (path.extname(file) == '.dbc') {
                 fileArray.push({ filename: file, using: file == getActiveFileName() });
             }
@@ -49,9 +49,8 @@ const loadFileNames = async(req, res) => {
  * @param {*} req 
  * @param {*} res 
  */
-const changeActiveFile = async(req, res) => {
+const changeActiveFile = async (req, res) => {
     const fileName = req.query.filename;
-    console.log('changeACtive');
     try {
         const activeFile = await loadDbcFile(fileName);
         if (activeFile.error) throw activeFile.error;
@@ -66,7 +65,7 @@ const changeActiveFile = async(req, res) => {
         }
 
     } catch (error) {
-        console.log('error');
+        console.log('changeActiveFile error: ', error);
         res.send(error).status(500);
     }
 }
@@ -95,7 +94,7 @@ const deleteDbcFile = (req, res) => {
         res.sendStatus(204);
     } catch (err) {
         res.sendStatus(500);
-        console.log(err);
+        console.log('deleteDbcFile error: ', err);
     }
 }
 
@@ -137,16 +136,15 @@ const parseMessage = (carMessage) => {
 const downloadDbcFile = (req, res) => {
     var filePath = "db/dbcFiles/" + req.query.filename; // Or format the path using the `id` rest param
     var fileName = req.query.filename; // The default name the browser will use
-    console.log(filePath, fileName);
 
-    res.download(filePath, fileName, function(err) {
+    res.download(filePath, fileName, function (err) {
         if (err) {
-            console.log('download err:', err);
+            console.log('downloadDbcFile err:', err);
             // Handle error, but keep in mind the response may be partially-sent
             // so check res.headersSent
         } else {
             // decrement a download credit, etc.
-            console.log('no errors');
+            console.log('downloadDbcFile success');
         }
     })
 }
