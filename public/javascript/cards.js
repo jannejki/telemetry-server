@@ -18,9 +18,10 @@ function Card(CAN, cardElement) {
     this.updateValues = (messages) => {
         const dataTable = document.getElementById(`${CAN}Table`);
         dataTable.innerHTML = ``;
+        let htmlRows = "";
 
         messages.forEach((msg) => {
-
+            console.log(msg);
             // TODO: figure out real fault codes
             const fault = (msg.data > msg.max || msg.data < msg.min);
             let color;
@@ -29,7 +30,7 @@ function Card(CAN, cardElement) {
                 color = '#fc0303';
                 this.faults++;
             } else {
-                color = '#FFFFFF';
+                color = '#000000';
             }
 
             if (this.faults > 0) {
@@ -38,11 +39,11 @@ function Card(CAN, cardElement) {
                 this.cardElement.setAttribute('class', 'card running');
             }
 
-            dataTable.innerHTML = `${dataTable.innerHTML}
-                                <tr>
+            htmlRows += `<tr>
                                     <td style="color: ${color}">${msg.name}</td>
                                     <td style="color: ${color}"> ${msg.data.toFixed(3)}</td>
                                 </tr>`;
         });
+        dataTable.innerHTML = htmlRows;
     };
 }

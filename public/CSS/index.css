@@ -34,6 +34,7 @@ html {
 
 .fault {
     background-color: yellow;
+    color:black!important;
 }
 
 .notResponding {
@@ -55,7 +56,9 @@ html {
 .messageDiv {}
 
 .dataTable {
-    padding: 0 0.5em;
+    width:100%;
+    padding: 0;
+    margin:auto;
 }
 
 tr {
