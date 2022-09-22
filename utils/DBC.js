@@ -6,6 +6,8 @@ import getTimestamp from './timestamp.js';
 let dbcFile;
 let dbcFileName;
 const ruleArray = [];
+
+
 /**
  * @brief loads .dbc file to variable dbcFile for faster use
  * @param {String} wantedDbcFile 
@@ -77,12 +79,25 @@ const getCanNames = () => {
 const hexDataToPhysicalData = (message) => {
     const rules = getDecodingRules(message.canID);
 
+
+    //-----------------------------------//
+    let rules2 = [];
+    for (let msg of ruleArray) {
+        if (msg.CANID == message.canID) {
+            rules2 = msg.signals;
+            break;
+        }
+    }
+
+    console.log(rules2);
+
+
+    //-----------------------------------//
     let valueArray = [];
     //FIXME create better way to handle errors
     if (rules.error) {
         return rules;
     }
-
     // for each signal rule, calculate value
     rules.forEach(rule => {
         let startBit = parseInt(rule.startBit);
@@ -131,6 +146,7 @@ const hexDataToPhysicalData = (message) => {
         // push calculated value to array
         valueArray.push({ canID: message.canID, name: rule.name, hexData: message.data, data: value, unit: rule.unit, min: rule.min, max: rule.max })
     })
+
     return valueArray;
 }
 

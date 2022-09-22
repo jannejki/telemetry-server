@@ -27,6 +27,7 @@ const calculateValue = (req, res) => {
  * @param {[{canID: String, DLC: Number, data: String, timestamp: String}]} parsedMessage Array of message objects
  */
 const saveData = async (parsedMessage) => {
+
     parsedMessage.forEach(async (msg) => {
         const realDatas = calculate(msg);
 

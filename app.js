@@ -21,7 +21,7 @@ import resolvers from './apollo/resolvers/resolverIndex';
 import { activateDBC } from './controllers/dbcFileController.js';
 
 dotenv.config();
-const port = 3000;
+const port = 443;
 
 const middlewareSession = session(({
     secret: process.env.SESSION_SECRET,
