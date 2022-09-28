@@ -28,7 +28,7 @@ const calculateValue = (req, res) => {
  */
 const saveData = async (parsedMessage) => {
 
-    parsedMessage.forEach(async (msg) => {
+    /*parsedMessage.forEach(async (msg) => {
         const realDatas = calculate(msg);
 
         // saves dataValue objects to database
@@ -39,9 +39,9 @@ const saveData = async (parsedMessage) => {
             })
         );
 
-        // Saves datapoint to database that has dataValue objects as a data-field's value
-        await dataPointModel.create({ CAN: msg.canID, DLC: msg.DLC, data: dataValueModels, timestamp: msg.timestamp });
-    });
+    // Saves datapoint to database that has dataValue objects as a data-field's value
+    await dataPointModel.create({ CAN: msg.canID, DLC: msg.DLC, data: dataValueModels, timestamp: msg.timestamp });
+});*/
 }
 
 

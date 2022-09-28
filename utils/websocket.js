@@ -31,9 +31,9 @@ const startWs = (server, session) => {
         }
     });
 
-    io.on('connection', async(socket) => {
+    io.on('connection', async (socket) => {
         sendCarStatus();
-        socket.on('disconnect', () => {});
+        socket.on('disconnect', () => { });
     });
 }
 
@@ -41,7 +41,7 @@ const startWs = (server, session) => {
 /**
  * @brief sends car status to client.
  */
-const sendCarStatus = async() => {
+const sendCarStatus = async () => {
     io.emit('carStatus', { carStatus });
 }
 

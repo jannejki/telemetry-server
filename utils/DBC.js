@@ -24,6 +24,7 @@ const loadDbcFile = (wantedDbcFile) => {
                 dbcFile = data;
                 dbcFileName = wantedDbcFile;
                 createDBCMessageObjectsFromDBCFile();
+                console.table(ruleArray);
 
                 resolve({ activeDbc: dbcFileName });
             } catch (err) {
@@ -77,35 +78,29 @@ const getCanNames = () => {
  * @returns {[{canID: String, name: String, data: Number, unit: String, min: String, max: String }]} Physical values of message
  */
 const hexDataToPhysicalData = (message) => {
-    const rules = getDecodingRules(message.canID);
+    let rules = [];
 
-
-    //-----------------------------------//
-    let rules2 = [];
     for (let msg of ruleArray) {
         if (msg.CANID == message.canID) {
-            rules2 = msg.signals;
+            rules = msg.signals;
             break;
         }
     }
 
-    console.log(rules2);
-
-
-    //-----------------------------------//
     let valueArray = [];
-    //FIXME create better way to handle errors
-    if (rules.error) {
-        return rules;
-    }
-    // for each signal rule, calculate value
+
     rules.forEach(rule => {
+        //FIXME create better way to handle error
+        if (rule.error) {
+            return rule;
+        }
         let startBit = parseInt(rule.startBit);
         let length = parseInt(rule.length);
 
         // extract wanted bits from the message
         let binaryMessage = hexToBin(message.data)
         binaryMessage = binaryMessage.slice(startBit, (startBit + length));
+
         // create byte array 
         let binaryArray = binaryMessage.split("");
         let byteArray = [];
@@ -144,7 +139,15 @@ const hexDataToPhysicalData = (message) => {
         let value = parseFloat(rule.offset) + parseFloat(rule.scale) * rawValue;
 
         // push calculated value to array
-        valueArray.push({ canID: message.canID, name: rule.name, hexData: message.data, data: value, unit: rule.unit, min: rule.min, max: rule.max })
+        valueArray.push({
+            canID: message.canID,
+            name: rule.name,
+            hexData: message.data,
+            data: value,
+            unit: rule.unit,
+            min: rule.min,
+            max: rule.max
+        })
     })
 
     return valueArray;
@@ -305,6 +308,10 @@ export {
 }
 
 
+
+
+
+
 //===============================================================//
 //-----------------FUNTIONS ONLY FOR DBC.JS----------------------//
 //===============================================================//
@@ -313,6 +320,8 @@ export {
  * @return nothing
  */
 const createDBCMessageObjectsFromDBCFile = () => {
+    if (ruleArray.length > 0) ruleArray.splice(0, ruleArray.length);
+
     const rows = dbcFile.split(/\r\n/);
 
     const messageRows = rows.filter((row) => {
@@ -328,6 +337,7 @@ const createDBCMessageObjectsFromDBCFile = () => {
     messageRows.forEach((message) => {
         message = message.split(" ");
         const CANID = message[1];
+        const HEXID = "0x" + decToHex(CANID);
         const name = message[2].slice(0, message[2].length - 1);
         const DLC = message[3];
         const TXNode = message[4];
@@ -341,7 +351,7 @@ const createDBCMessageObjectsFromDBCFile = () => {
             }
         })
 
-        const obj = new DBCMessage(CANID, name, DLC, TXNode, comments);
+        const obj = new DBCMessage(CANID, HEXID, name, DLC, TXNode, comments);
         obj.getSignals();
 
         ruleArray.push(obj);

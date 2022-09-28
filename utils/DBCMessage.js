@@ -4,8 +4,9 @@ import { getDecodingRules } from "./DBC";
 
 class DBCMessage {
 
-    constructor(CANID, name, DLC, TXNode, comments) {
+    constructor(CANID, HEXID, name, DLC, TXNode, comments) {
         this.CANID = CANID;
+        this.HEXID = HEXID;
         this.name = name;
         this.DLC = DLC;
         this.TXNode = TXNode;
