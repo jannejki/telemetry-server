@@ -61,7 +61,7 @@ const middlewareSession = session(({
             typeDefs,
             resolvers,
             plugins: [
-                ApolloServerPluginLandingPageDisabled()
+                //  ApolloServerPluginLandingPageDisabled()
             ],
             context: async ({ req, res }) => {
                 if (process.env.NODE_ENV === 'development') {

@@ -1,7 +1,7 @@
 'use strict';
 import fs from 'fs';
-import DBCMessage from './DBCMessage.js';
-import getTimestamp from './timestamp.js';
+import DBCMessage from '../utils/DBCMessage.js';
+import getTimestamp from '../utils/timestamp.js';
 
 let dbcFile;
 let dbcFileName;
@@ -45,30 +45,17 @@ const getActiveFileName = () => {
 
 
 /**
- * @brief Reads every CAN node ID and name from active .dbc file
+ * @brief Gets every CAN ID and CAN name from ruleArray
  * @returns {[{canID: String, name: String}]} Array of CAN IDs and names
  */
 const getCanNames = () => {
-    let decodingRules = dbcFile.split("\nBO_ ");
-    decodingRules.splice(0, 1);
-    for (let i = 0; i < decodingRules.length; i++) {
-        if (decodingRules[i].indexOf("\nCM_ ") !== -1) {
-            let split = decodingRules[i].split("\nCM_ ");
-            decodingRules[i] = split[0];
-        }
-        if (decodingRules[i].indexOf(" SG_ ") === -1) {
-            decodingRules.splice(i, 1);
-        }
-    }
+    const names = [];
 
-    let names = [];
+    ruleArray.forEach((rule) => {
+        names.push({ canID: rule.CANID, name: rule.name })
+    });
 
-    for (let i = 0; i < decodingRules.length; i++) {
-        let split = decodingRules[i].split(" ");
-        let name = split[1].slice(0, -1);
-        names.push({ canID: split[0], name: name });
-    }
-    return names;
+    return ruleArray;
 }
 
 
@@ -159,7 +146,7 @@ const hexDataToPhysicalData = (message) => {
  * @param {String} canID finds decoding rules for this CAN ID
  * @returns {[{ name: String, startBit: Number, length: Number, endian: Number, scale: Number, offset: Number, min: Number, max: Number, unit: Number }]} Decoding rules found from .dbc file
  */
-const getDecodingRules = (canID) => {
+const getDecodingRulesFromDBC = (canID) => {
     let index1, index2;
     let signalArray = [];
     const rows = dbcFile.split(/\r\n/);
@@ -247,7 +234,7 @@ const getDecodingRules = (canID) => {
         return signalArray;
 
     } catch (error) {
-        console.log('getDecodingRules:', error);
+        console.log('getDecodingRulesFromDBC:', error);
         // if something went wrong, return this
         return [{ error: error, value: undefined }]
     }
@@ -304,7 +291,7 @@ export {
     getCanNames,
     loadDbcFile,
     getActiveFileName,
-    getDecodingRules
+    getDecodingRulesFromDBC
 }
 
 

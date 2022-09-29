@@ -1,6 +1,6 @@
 'use strict';
 
-import { getDecodingRules } from "./DBC";
+import { getDecodingRulesFromDBC } from "../models/DBC";
 
 class DBCMessage {
 
@@ -15,7 +15,7 @@ class DBCMessage {
     }
 
     getSignals = () => {
-        this.signals = getDecodingRules(this.CANID);
+        this.signals = getDecodingRulesFromDBC(this.CANID);
     }
 
 }

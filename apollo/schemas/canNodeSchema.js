@@ -1,17 +1,18 @@
 import { gql } from 'apollo-server-express';
 
-export default gql `
+export default gql`
   extend type Query {
-      canNodes(canID: String, name: String, rules: Boolean): [node]
+      canNodes(CANID: String, name: String, fault: Boolean): [node]
   }
 
   type node {
-      canID: String,
+      CANID: String,
       name: String,
-      rules: [rules]
+      comments: [String]
+      signals: [signals]
   }
 
-  type rules {
+  type signals {
     name: String,
     startBit: String,
     length: String,

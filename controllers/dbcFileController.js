@@ -2,7 +2,7 @@
 import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
-import { loadDbcFile, getCanNames, getActiveFileName, hexDataToPhysicalData, parseMessage as parse, getDecodingRules } from '../utils/DBC.js';
+import { loadDbcFile, getCanNames, getActiveFileName, hexDataToPhysicalData, parseMessage as parse, getDecodingRulesFromDBC } from '../models/DBC.js';
 import Settings from '../apollo/models/settingsModel.js';
 
 
@@ -105,8 +105,8 @@ const deleteDbcFile = (req, res) => {
  * @returns {[{ name: String, startBit: Number, length: Number, endian: Number, scale: Number, offset: Number, min: Number, max: Number, unit: Number }]} Decoding rules found from .dbc file
  */
 const loadCanRules = (canID) => {
-    const rules = getDecodingRules(canID);
-    return rules;
+    console.log("täällä");
+    return [];
 }
 
 

@@ -4,13 +4,13 @@ const cardSocket = io();
 const liveChannel = 'live';
 
 // Load nodes and create cards when page is loaded
-window.onload = async(event) => {
+window.onload = async (event) => {
     let nodes = await getNodes();
     createCards(nodes);
 };
 
 // Get CAN node information from server.
-const getNodes = async() => {
+const getNodes = async () => {
     const query = `query CanNodes($rules: Boolean) {
         canNodes(rules: $rules) {
           name
