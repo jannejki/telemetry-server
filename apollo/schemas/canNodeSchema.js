@@ -7,6 +7,7 @@ export default gql`
 
   type node {
       CANID: String,
+      HEXID: String,
       name: String,
       comments: [String]
       signals: [signals]

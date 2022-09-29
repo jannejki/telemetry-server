@@ -15,17 +15,17 @@ async function deleteDbcFile(filename) {
 
     // sends request to server to delete the file
     await fetch('/settings/deleteDbcFile', {
-            method: 'delete',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ filename: filename })
-        }).then(response => {
-            if (response.status === 500) alert('something went wrong!');
-            if (response.status === 401) alert('Not Authorized!');
-            if (response.status === 204) alert('file removed from database!');
-        })
-        // refreshes file table
+        method: 'delete',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ filename: filename })
+    }).then(response => {
+        if (response.status === 500) alert('something went wrong!');
+        if (response.status === 401) alert('Not Authorized!');
+        if (response.status === 204) alert('file removed from database!');
+    })
+    // refreshes file table
     refreshFileTable();
 }
 
@@ -99,7 +99,7 @@ const refreshFileTable = () => {
  * @brief changes the active dbc file
  * @param {string} filename name of the file to use
  */
-const changeDbcFile = async(filename) => {
+const changeDbcFile = async (filename) => {
     // sends request to server to change active file
     const resp = await fetch('/settings/changeDbcFile/?filename=' + filename);
 
@@ -125,12 +125,14 @@ const changeDbcFile = async(filename) => {
 /**
  * @brief refreshes can table to show the CAN ids that are in the active dbc file
  */
-const refreshCanTable = async() => {
+const refreshCanTable = async () => {
     // creating header row
     let table = document.getElementById("canTable");
     table.innerHTML = `<tr>
-                            <th>ID</th>
+                            <th>DEC ID</th>
+                            <th>HEX ID</th>
                             <th>Name</th>
+                            <th>comments</th>
                        <tr>`;
     let tr = document.createElement("tr");
 
@@ -141,18 +143,23 @@ const refreshCanTable = async() => {
     for (let i = 0; i < canList.length; i++) {
         table.innerHTML = `${table.innerHTML}
                             <tr>
-                                <td>${canList[i].canID}</td>
+                                <td>${canList[i].CANID}</td>
+                                <td>${canList[i].HEXID}</td>
                                 <td>${canList[i].name}</td>
+                                <td>${canList[i].comments}</td>
+                                
                             </tr>`;
     }
 }
 
 // Get CAN node information from server.
-const getNodes = async() => {
-    const query = `query CanNodes($rules: Boolean) {
-        canNodes(rules: $rules) {
+const getNodes = async () => {
+    const query = `query Query {
+        canNodes {
+          CANID
+          HEXID
           name
-          canID
+          comments
         }
       }`;
 

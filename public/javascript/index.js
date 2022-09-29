@@ -11,14 +11,18 @@ window.onload = async (event) => {
 
 // Get CAN node information from server.
 const getNodes = async () => {
-    const query = `query CanNodes($rules: Boolean) {
-        canNodes(rules: $rules) {
+    const query = `query Query($fault: Boolean) {
+        canNodes(fault: $fault) {
+          CANID
           name
-          canID
         }
       }`;
 
-    const result = await fetchGQL(query);
+    const variables = {
+        fault: false
+    }
+
+    const result = await fetchGQL(query, variables);
     return result.data.canNodes;
 }
 
@@ -28,16 +32,16 @@ function createCards(nodes) {
 
     nodes.forEach((node) => {
         const card = document.createElement('div');
-        card.setAttribute('id', node.canID);
+        card.setAttribute('id', node.CANID);
         card.setAttribute('class', 'card');
 
         card.innerHTML = `<h2>${node.name}</h2>
-                          <div id="${node.canID}Data" class="messageDiv">
-                            <table id="${node.canID}Table" class="dataTable"></table>
+                          <div id="${node.CANID}Data" class="messageDiv">
+                            <table id="${node.CANID}Table" class="dataTable"></table>
                           </div>`;
 
         dashboardDiv.appendChild(card);
-        cards.push(new Card(node.canID, card));
+        cards.push(new Card(node.CANID, card));
     });
 }
 

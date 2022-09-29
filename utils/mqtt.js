@@ -40,7 +40,7 @@ const startMQTT = () => {
         try {
             const parsedMessage = parseMessage(msg);
             sendLiveData(parsedMessage);
-            await saveData(parsedMessage);
+            //  await saveData(parsedMessage);
             sendDebugMessage({ error: null, received: msg });
         } catch (error) {
             console.log("message from car is corrupted!", error);
