@@ -30,14 +30,17 @@ const middlewareSession = session(({
 }));
 
 (async () => {
+    console.log('testi');
     try {
-        const conn = await connectMongo();
+        console.log('testi2');
+        /*const conn = await connectMongo();
         if (conn) {
             console.log('Connected to database!');
         } else {
             throw new Error('db not connected');
-        }
+        }*/
 
+        console.log('testi3');
         // express app
         const app = express();
         app.set('view engine', 'ejs');
