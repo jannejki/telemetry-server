@@ -24,7 +24,6 @@ const loadDbcFile = (wantedDbcFile) => {
                 dbcFile = data;
                 dbcFileName = wantedDbcFile;
                 createDBCMessageObjectsFromDBCFile();
-                console.table(ruleArray);
 
                 resolve({ activeDbc: dbcFileName });
             } catch (err) {

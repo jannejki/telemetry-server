@@ -58,7 +58,6 @@ const changeActiveFile = async (req, res) => {
         const settings = await Settings.findByIdAndUpdate(process.env.SETTINGS, { activeDbc: activeFile.activeDbc });
         if (settings == null) {
             const result = await Settings.create({ activeDbc: activeFile.activeDbc });
-            console.log(result);
             res.status(201).send({ result });
         } else {
             res.sendStatus(204);
@@ -105,7 +104,6 @@ const deleteDbcFile = (req, res) => {
  * @returns {[{ name: String, startBit: Number, length: Number, endian: Number, scale: Number, offset: Number, min: Number, max: Number, unit: Number }]} Decoding rules found from .dbc file
  */
 const loadCanRules = (canID) => {
-    console.log("täällä");
     return [];
 }
 

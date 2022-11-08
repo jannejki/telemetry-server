@@ -2,7 +2,7 @@
 
 const chartList = [];
 
-window.onload = async() => {
+window.onload = async () => {
     //checking current date and time to preset values for user inputs
     const today = new Date();
     let year = today.getFullYear();
@@ -27,11 +27,11 @@ window.onload = async() => {
 /**
  * @brief Fills dropdown list with all CAN names
  */
-const fillCanDropDownList = async() => {
-    const query = `query CanNodes($rules: Boolean) {
-        canNodes(rules: $rules) {
+const fillCanDropDownList = async () => {
+    const query = `query CanNodes {
+        canNodes {
+          CANID
           name
-          canID
         }
       }`;
 
@@ -63,7 +63,7 @@ function checkTime(i) {
  * @brief event listener for addNewChartOptions form.
  * @description sends request to get the data for selected CAN and time.
  */
-document.forms['addNewChartOptions'].addEventListener('submit', async(event) => {
+document.forms['addNewChartOptions'].addEventListener('submit', async (event) => {
     // preveting default event
     event.preventDefault();
 
@@ -174,7 +174,7 @@ const createChartElements = (dataPoints, selectedCAN) => {
                         </div>
                         
                         <div class="rangeInput">
-                            <input type="range" id="min${selectedCAN}" class="range" min="0" max="${dataPoints.length -1}" value="0";>
+                            <input type="range" id="min${selectedCAN}" class="range" min="0" max="${dataPoints.length - 1}" value="0";>
                             <input type="range" id="max${selectedCAN}" class="range" max="${dataPoints.length}" min="1" value="${dataPoints.length}">
                         </div>`;
 
@@ -183,11 +183,11 @@ const createChartElements = (dataPoints, selectedCAN) => {
     const minSlider = document.getElementById(`min${selectedCAN}`);
     const maxSlider = document.getElementById(`max${selectedCAN}`);
 
-    minSlider.oninput = function() {
+    minSlider.oninput = function () {
         sliderFunction(selectedCAN, dataPoints);
     }
 
-    maxSlider.oninput = function() {
+    maxSlider.oninput = function () {
         sliderFunction(selectedCAN, dataPoints);
     }
 }

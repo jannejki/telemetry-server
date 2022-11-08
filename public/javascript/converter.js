@@ -1,4 +1,4 @@
-window.onload = async() => {
+window.onload = async () => {
     /*fetch('/settings/loadCanList')
         .then(response => response.json())
         .then(data => fillDropDown(data.canList));*/
@@ -6,11 +6,11 @@ window.onload = async() => {
     fillDropDown(canList);
 }
 
-const loadCanList = async() => {
-    const query = `query CanNodes($rules: Boolean) {
-        canNodes(rules: $rules) {
+const loadCanList = async () => {
+    const query = `query CanNodes {
+        canNodes {
+          CANID
           name
-          canID
         }
       }`;
 
@@ -26,7 +26,7 @@ const loadCanList = async() => {
 function fillDropDown(canList) {
     canList.forEach((can) => {
         let option = document.createElement("option");
-        option.setAttribute("value", can.canID);
+        option.setAttribute("value", can.CANID);
         option.innerText = can.name;
         document.getElementById("canList").appendChild(option);
     })
@@ -35,7 +35,7 @@ function fillDropDown(canList) {
 /**
  * @brief event listener for form to prevent default submit 
  */
-document.forms['convertForm'].addEventListener('submit', async(event) => {
+document.forms['convertForm'].addEventListener('submit', async (event) => {
     event.preventDefault();
     let node = document.getElementById("canList").value;
     let hex = document.getElementById("hexInput").value.toUpperCase();

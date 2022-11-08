@@ -39,7 +39,7 @@ function ServerInterface() {
     // Adds new canID to a array that is sent 
     // to server to ask the latest messages from the
     // can ids that are in array. 
-    this.addNewId = function(canID) {
+    this.addNewId = function (canID) {
         this.idArray["canID"].push({ can: canID })
     };
 
@@ -85,7 +85,7 @@ function ServerInterface() {
         }
     };
 
-    this.getIdArray = function() {
+    this.getIdArray = function () {
         return this.idArray;
     };
 }
@@ -103,11 +103,11 @@ window.onload = () => {
     }
 }
 
-const fillCanDropDownList = async() => {
-    const query = `query CanNodes($rules: Boolean) {
-        canNodes(rules: $rules) {
+const fillCanDropDownList = async () => {
+    const query = `query CanNodes {
+        canNodes {
+          CANID
           name
-          canID
         }
       }`;
 
@@ -175,37 +175,37 @@ function addChart() {
 
     // Starting an interval that will update the chart with new data.
     let chartUpdateInterval = setInterval(() => {
-            let latestMessage = serverInterface.getLatestMessages(selectedCAN);
+        let latestMessage = serverInterface.getLatestMessages(selectedCAN);
 
-            // for every data message from node, create new dataset to same chart
-            if (chart.data.datasets.length === 0) {
-                if (latestMessage[0].name == undefined) return;
-                latestMessage.forEach((data) => {
-                    let randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
+        // for every data message from node, create new dataset to same chart
+        if (chart.data.datasets.length === 0) {
+            if (latestMessage[0].name == undefined) return;
+            latestMessage.forEach((data) => {
+                let randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
 
-                    let dataset = {
-                        dataName: data.name,
-                        spanGaps: true,
-                        label: data.name + " (" + data.unit + ")",
-                        backgroundColor: randomColor,
-                        borderColor: randomColor,
-                        borderWidth: 2,
-                        hoverBackgroundColor: randomColor,
-                        hoverBorderColor: randomColor,
-                        data: []
-                    }
-                    chart.data.datasets.push(dataset);
-                })
-            }
-            try {
-                updateChart(latestMessage, chart, ticks, labelAmount, oneSec);
-            } catch (error) {
-                clearInterval(chartUpdateInterval);
-                console.error(error);
-            }
-            lastMessage = latestMessage;
-            ticks++;
-        },
+                let dataset = {
+                    dataName: data.name,
+                    spanGaps: true,
+                    label: data.name + " (" + data.unit + ")",
+                    backgroundColor: randomColor,
+                    borderColor: randomColor,
+                    borderWidth: 2,
+                    hoverBackgroundColor: randomColor,
+                    hoverBorderColor: randomColor,
+                    data: []
+                }
+                chart.data.datasets.push(dataset);
+            })
+        }
+        try {
+            updateChart(latestMessage, chart, ticks, labelAmount, oneSec);
+        } catch (error) {
+            clearInterval(chartUpdateInterval);
+            console.error(error);
+        }
+        lastMessage = latestMessage;
+        ticks++;
+    },
         interval);
 }
 
