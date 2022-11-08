@@ -7,7 +7,7 @@ import bcrypt from 'bcrypt';
 
 export default {
     Query: {
-        users: async(parent, args, context) => {
+        users: async (parent, args, context) => {
             if (!context.user) throw new AuthenticationError('UNAUTHENTICATED');
 
             // Find by admin rights
@@ -25,7 +25,7 @@ export default {
     },
 
     Mutation: {
-        addUser: async(parent, args, context) => {
+        addUser: async (parent, args, context) => {
             process.env.ADMIN = process.env.ADMIN || 'TRUE';
             if (!context.user.rights && process.env.ADMIN == 'TRUE') throw new ForbiddenError('UNAUTHORIZED');
 
@@ -33,14 +33,15 @@ export default {
             return createdUser;
         },
 
-        deleteUser: async(parent, args, context) => {
+        deleteUser: async (parent, args, context) => {
+            console.log(context.user);
             if (!context.user.rights) throw new ForbiddenError('UNAUTHORIZED');
-
+            console.log("täällä");
             const result = await userModel.findOneAndDelete({ _id: args.id });
             return result;
         },
 
-        changePassword: async(parent, args, context) => {
+        changePassword: async (parent, args, context) => {
             if (!context.user.rights) throw new ForbiddenError('UNAUTHORIZED');
 
             const hashedPwd = await getNewPassword(args.password);

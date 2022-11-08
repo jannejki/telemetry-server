@@ -53,6 +53,7 @@ async function deleteUser(id) {
     };
 
     const result = await fetchGQL(query, variables);
+    console.log(result);
     alert(`User "${result.data.deleteUser.username}" Deleted from database!`);
 }
 

@@ -64,12 +64,8 @@ const middlewareSession = session(({
                 //  ApolloServerPluginLandingPageDisabled()
             ],
             context: async ({ req, res }) => {
-                if (process.env.NODE_ENV === 'development') {
-                    return { user: true };
-                } else {
-                    const user = req.user || false;
-                    return { user };
-                }
+                const user = req.user || false;
+                return { user };
             },
         });
 

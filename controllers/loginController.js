@@ -20,7 +20,10 @@ const loginCredentials = async (req, res) => {
 
 
 const logout = async (req, res) => {
-    req.logOut();
+    req.logOut((e) => {
+        console.log('logout: ', e);
+    });
+
     res.redirect('/');
 }
 
@@ -47,15 +50,10 @@ const checkAuthenticated = (req, res, next) => {
  * @returns next() if user has admin rights, otherwise sends http status 401 (unauthorized)
  */
 const checkAuthorized = (req, res, next) => {
-    process.env.ADMIN = process.env.ADMIN || 'TRUE';
-    if (process.env.ADMIN == 'TRUE') {
-        if (req.isAuthenticated() && req.user.rights) {
-            return next();
-        } else {
-            res.sendStatus(401);
-        }
-    } else {
+    if (req.isAuthenticated() && req.user.rights) {
         return next();
+    } else {
+        res.sendStatus(401);
     }
 }
 
