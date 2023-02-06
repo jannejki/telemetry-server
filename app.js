@@ -29,66 +29,66 @@ const middlewareSession = session(({
     saveUninitialized: false,
 }));
 
-(async () => {
+(async () => 
     try {
-        const conn = await connectMongo();
-        if (conn) {
-            console.log('Connected to database!');
-        } else {
-            throw new Error('db not connected');
-        }
-
-        // express app
-        const app = express();
-        app.set('view engine', 'ejs');
-        app.use(express.static(path.join(__dirname, 'public')));
-        app.use(bodyParser.urlencoded({ extended: true }));
-        app.use(bodyParser.json());
-        app.use(bodyParser.raw());
-        app.use(passport.initialize());
-        app.use(flash());
-        app.use(middlewareSession);
-
-        app.use(passport.session());
-        app.use('/login', loginRoute);
-        app.use('/', webRoute);
-        app.use('/settings', settingsRoute);
-        app.use('/data', dataRoute);
-
-
-        // Apollo graphql server
-        const apolloServer = new ApolloServer({
-            typeDefs,
-            resolvers,
-            plugins: [
-                //  ApolloServerPluginLandingPageDisabled()
-            ],
-            context: async ({ req, res }) => {
-                const user = req.user || false;
-                return { user };
-            },
-        });
-
-        await apolloServer.start();
-        apolloServer.applyMiddleware({ app });
-
-
-        // Server
-        const server = require('http').createServer(app);
-        server.listen(port, () => {
-            console.log(`Server listening port ${port}`);
-        });
-
-        // websocket
-        startWs(server, middlewareSession);
-
-        // MQTT
-        startMQTT();
-
-        // DBC
-        activateDBC();
-
-    } catch (e) {
-        console.log('server error: ' + e.message);
+    const conn = await connectMongo();
+    if (conn) {
+        console.log('Connected to database!');
+    } else {
+        throw new Error('db not connected');
     }
-})();
+
+    // express app
+    const app = express();
+    app.set('view engine', 'ejs');
+    app.use(express.static(path.join(__dirname, 'public')));
+    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(bodyParser.json());
+    app.use(bodyParser.raw());
+    app.use(passport.initialize());
+    app.use(flash());
+    app.use(middlewareSession);
+
+    app.use(passport.session());
+    app.use('/login', loginRoute);
+    app.use('/', webRoute);
+    app.use('/settings', settingsRoute);
+    app.use('/data', dataRoute);
+
+
+    // Apollo graphql server
+    const apolloServer = new ApolloServer({
+        typeDefs,
+        resolvers,
+        plugins: [
+            //  ApolloServerPluginLandingPageDisabled()
+        ],
+        context: async ({ req, res }) => {
+            const user = req.user || false;
+            return { user };
+        },
+    });
+
+    await apolloServer.start();
+    apolloServer.applyMiddleware({ app });
+
+
+    // Server
+    const server = require('http').createServer(app);
+    server.listen(port, () => {
+        console.log(`Server listening port ${port}`);
+    });
+
+    // websocket
+    startWs(server, middlewareSession);
+
+    // MQTT
+    startMQTT();
+
+    // DBC
+    activateDBC();
+
+} catch (e) {
+    console.log('server error: ' + e.message);
+}
+}) ();
