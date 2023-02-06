@@ -59,14 +59,21 @@ const changeActiveFile = async (req, res) => {
     try {
         const activeFile = await loadDbcFile(fileName);
         if (activeFile.error) throw activeFile.error;
+        // update settings.json file
+        fs.readFile(path.join(__dirname, '../settings.json'), 'utf8', async (err, data) => {
+            if (err) {
+                throw err;
+            } else {
+                const settings = JSON.parse(data);
+                settings.ACTIVE_DBC = fileName;
+                fs.writeFile(path.join(__dirname, '../settings.json'), JSON.stringify(settings), (err) => {
+                    if (err) throw err;
+                    console.log('[dbcFileCtrl] Active dbc-file changed to:', fileName);
+                });
+            }
+        });
+        res.sendStatus(204);
 
-        const settings = await Settings.findByIdAndUpdate(process.env.SETTINGS, { activeDbc: activeFile.activeDbc });
-        if (settings == null) {
-            const result = await Settings.create({ activeDbc: activeFile.activeDbc });
-            res.status(201).send({ result });
-        } else {
-            res.sendStatus(204);
-        }
 
     } catch (error) {
         console.log('changeActiveFile error: ', error);
