@@ -21,7 +21,7 @@ function Card(CAN, cardElement) {
         let htmlRows = "";
 
         messages.forEach((msg) => {
-            console.log(msg);
+     
             // TODO: figure out real fault codes
             const fault = (msg.data > msg.max || msg.data < msg.min);
             let color;

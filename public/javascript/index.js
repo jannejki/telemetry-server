@@ -48,7 +48,9 @@ function createCards(nodes) {
 
 cardSocket.on(liveChannel, (message) => {
     message.latestMessage.forEach((message) => {
-        updateCard(message);
+        if(message.length > 0) {
+            updateCard(message);
+        }
     })
 });
 

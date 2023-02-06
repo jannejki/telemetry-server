@@ -257,11 +257,10 @@ const parseMessage = (message) => {
 
     try {
         while (byteArray.length > 0) {
+
             // get first two bytes from array and convert them to can ID 
             let canID = (byteArray[0].concat(byteArray[1])).join("");
-            canID = hexToBin(canID);
-            canID = binToDec(canID);
-
+            canID = parseInt(canID);
             // Get next byte for DLC (tells how long data part is)
             let dlc = byteArray[2].join("");
             dlc = hexToBin(dlc);
@@ -271,15 +270,16 @@ const parseMessage = (message) => {
 
             // Get as many data bytes from message as dlc tells
             let data = "";
+
             for (let i = 0; i < dlc; i++) {
-                data += byteArray[0].join("").toUpperCase();;
+                data += byteArray[0].join("").toUpperCase();
                 byteArray.splice(0, 1);
             }
             messageArray.push({ canID: canID.toString(), DLC: dlc, data: data, timestamp: timestamp });
         }
         return messageArray;
     } catch (error) {
-        console.log('parseMessage: ', error);
+        console.log('\n\nparseMessage error: ', error);
         return ({ error: error })
     }
 }
@@ -323,7 +323,8 @@ const createDBCMessageObjectsFromDBCFile = () => {
 
     messageRows.forEach((message) => {
         message = message.split(" ");
-        const CANID = message[1];
+        let CANID;
+        CANID = message[1];
         const HEXID = "0x" + decToHex(CANID);
         const name = message[2].slice(0, message[2].length - 1);
         const DLC = message[3];
