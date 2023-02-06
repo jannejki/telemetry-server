@@ -38,6 +38,7 @@ const users = async (req, res) => {
  */
 const addNewUser = async (req, res) => {
     try {
+        console.log(req.body);
         await createNewUser(req.body);
         res.sendStatus(200);
     } catch (err) {

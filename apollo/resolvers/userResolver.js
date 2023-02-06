@@ -11,13 +11,13 @@ export default {
             if (!context.user) throw new AuthenticationError('UNAUTHENTICATED');
 
             // Find by admin rights
-            if (args.rights && !args.username) return await userModel.find({ rights: args.rights });
+            if (args.PRIVILEGE && !args.NAME) return await userModel.find({ PRIVILEGE: args.PRIVILEGE });
 
             // Find by username
-            if (!args.rights && args.username) return await userModel.find({ username: args.username });
+            if (!args.PRIVILEGE && args.NAME) return await userModel.find({ NAME: args.NAME });
 
             // find by admin rights && username
-            if (args.rights && args.username) return await userModel.find({ rights: args.rights, username: args.username });
+            if (args.PRIVILEGE && args.NAME) return await userModel.find({ PRIVILEGE: args.PRIVILEGE, NAME: args.NAME });
 
             // Find all
             return await userModel.find();
@@ -27,25 +27,30 @@ export default {
     Mutation: {
         addUser: async (parent, args, context) => {
             process.env.ADMIN = process.env.ADMIN || 'TRUE';
-            if (!context.user.rights && process.env.ADMIN == 'TRUE') throw new ForbiddenError('UNAUTHORIZED');
+            if (context.user.PRIVILEGE != 'admin' && process.env.ADMIN == 'TRUE') throw new ForbiddenError('UNAUTHORIZED');
 
             const createdUser = await newUser(args);
             return createdUser;
         },
 
         deleteUser: async (parent, args, context) => {
-            console.log(context.user);
-            if (!context.user.rights) throw new ForbiddenError('UNAUTHORIZED');
-            console.log("täällä");
-            const result = await userModel.findOneAndDelete({ _id: args.id });
+            if (context.user.PRIVILEGE != 'admin') throw new ForbiddenError('UNAUTHORIZED');
+            const result = await userModel.delete({ID: args.ID});
             return result;
         },
 
         changePassword: async (parent, args, context) => {
-            if (!context.user.rights) throw new ForbiddenError('UNAUTHORIZED');
+            if (context.user.PRIVILEGE != 'admin') throw new ForbiddenError('UNAUTHORIZED');
 
-            const hashedPwd = await getNewPassword(args.password);
-            const result = await userModel.findOneAndUpdate({ _id: args.id }, { password: hashedPwd });
+            const hashedPwd = await getNewPassword(args.PASSWORD);
+            const result = await userModel.edit( args.ID, { PASSWORD: hashedPwd });
+            return result;
+        },
+
+        changePrivilege: async(parent, args, context) => {
+            if (context.user.PRIVILEGE != 'admin') throw new ForbiddenError('UNAUTHORIZED');
+
+            const result = await userModel.edit( args.ID, { PRIVILEGE: args.PRIVILEGE });
             return result;
         }
     }

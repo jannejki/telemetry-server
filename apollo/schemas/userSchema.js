@@ -4,22 +4,23 @@ import { gql } from 'apollo-server-express';
 
 export default gql `
   extend type Query {
-      users(id: String, username: String, rights: Boolean): [user]
+      users(NAME: String, PRIVILEGE: String): [user]
   }
 
   extend type Mutation {
-    addUser(username: String,
-            password: String,
+    addUser(NAME: String,
+            PASSWORD: String,
             rights: Boolean
             ): user,
 
-    deleteUser(id: String!): user
-    changePassword(id: String!, password: String!): user
+    deleteUser(ID: Int!): user
+    changePassword(ID: Int!, PASSWORD: String!): user
+    changePrivilege(ID: Int!, PRIVILEGE: String!): user
     }
 
   type user {
-      id: ID,
-      username: String,
-      rights: Boolean
+      ID: Int,
+      NAME: String,
+      PRIVILEGE: String
   }
 `;

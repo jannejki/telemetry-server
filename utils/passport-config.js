@@ -1,6 +1,7 @@
 'use strict';
 import User from '../apollo/models/userModel';
 import bcrypt from 'bcrypt';
+import { getNewPassword } from './newUser';
 
 
 /**
@@ -11,15 +12,15 @@ import bcrypt from 'bcrypt';
  * @returns 
  */
 const localStrategy = async (username, password, done) => {
-    const users = await User.find({ username: username });
-
+    const users = await User.find({ NAME: username });
     if (users.length == 0) {
         return done(null, false, { message: 'User or password wrong!' });
     }
 
     try {
-        if (await bcrypt.compare(password, users[0].password)) {
-            users[0].password = undefined;
+
+        if (await bcrypt.compare(password, users[0].PASSWORD)) {
+            users[0].PASSWORD = undefined;
             return done(null, users[0]);
         } else {
             return done(null, false, { message: 'User or password wrong!' })
@@ -48,9 +49,9 @@ const serialize = (user, done) => {
  * @returns callback
  */
 const deserialize = (async (user, done) => {
-    const foundUser = await User.findById(user._id);
-    foundUser.password = undefined;
-    return done(null, foundUser);
+    const foundUser = await User.find({ID: user.ID});
+    foundUser[0].PASSWORD = undefined;
+    return done(null, foundUser[0]);
 })
 
 

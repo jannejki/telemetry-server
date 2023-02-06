@@ -9,12 +9,18 @@ import Settings from '../apollo/models/settingsModel.js';
 const activateDBC = async () => {
 
     try {
-        // Load settings from database
-        const settings = await Settings.findById(process.env.SETTINGS);
-        // Load active dbc file
-        const loadedFile = await loadDbcFile(settings.activeDbc);
-        if (loadedFile.error) throw loadedFile.error;
-        console.log('[dbcFileCtrl] Active dbc-file:', loadedFile);
+        // use fs to read settings.conf
+        fs.readFile(path.join(__dirname, '../settings.json'), 'utf8', async (err, data) => {
+            if (err) {
+                throw err;
+            } else {
+                const settings = JSON.parse(data);
+                const loadedFile = await loadDbcFile(settings.ACTIVE_DBC);
+                if (loadedFile.error) throw loadedFile.error;
+                console.log('[dbcFileCtrl] Active dbc-file:', loadedFile);
+            }
+        });
+
     } catch (err) {
         console.log('[dbcFileCtr] ', err);
     }
