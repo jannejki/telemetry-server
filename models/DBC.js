@@ -14,12 +14,10 @@ const ruleArray = [];
  * @returns {{activeDbc: dbcFileName}} Name of the active dbcFile or { error } if not successful
  */
 const loadDbcFile = (wantedDbcFile) => {
-    console.log({wantedDbcFile});
     return new Promise((resolve, reject) => {
         fs.readFile('db/dbcFiles/' + wantedDbcFile, 'utf8', async (err, data) => {
             try {
                 if (err) {
-                    console.log({err});
                     throw err;
                 }
                 dbcFile = data;
@@ -27,7 +25,6 @@ const loadDbcFile = (wantedDbcFile) => {
                 createDBCMessageObjectsFromDBCFile();
                 resolve({ activeDbc: dbcFileName });
             } catch (err) {
-                console.log('2');
                 reject({ error: err });
             }
         });
