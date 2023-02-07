@@ -14,8 +14,7 @@ const checkParams = async (params, table) => {
         }
         return json;
     } catch (error) {
-        console.log('checkParams: ', error);
-        return false;
+        throw error;
     }
 }
 

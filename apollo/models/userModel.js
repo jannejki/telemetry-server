@@ -24,8 +24,8 @@ const user = {
             const result = await db.query(SQL);
             return result;
         } catch (error) {
-            console.log(error);
-            return false;
+            console.log('error in user.find');
+            return error;
         }
     },
 

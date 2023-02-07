@@ -31,13 +31,7 @@ const middlewareSession = session(({
 
 (async () => {
     try {
-
         const conn = await db.connect();
-        if (conn) {
-            console.log('Connected to database!');
-        } else {
-            throw new Error('db not connected');
-        }
 
         // express app
         const app = express();
@@ -67,7 +61,7 @@ const middlewareSession = session(({
             context: async ({ req, res }) => {
                 let user = false;
                 if (process.env.NODE_ENV == 'development') {
-                    user = {PRIVILEGE: 'admin'};
+                    user = { PRIVILEGE: 'admin' };
                 } else {
                     user = req.user || false;
                 }
@@ -81,8 +75,8 @@ const middlewareSession = session(({
 
         // Server
         const server = require('http').createServer(app);
-        server.listen(port, () => {
-            console.log(`Server listening port ${port}`);
+        server.listen(process.env.HTTP_PORT, () => {
+            console.log(`Server listening port ${process.env.HTTP_PORT}`);
         });
 
         // websocket
@@ -95,7 +89,20 @@ const middlewareSession = session(({
         activateDBC();
 
     } catch (e) {
+
         console.log('server error: ' + e.message);
+        const app = express();
+        // redirect every request to error page
+        app.use((req, res) => {
+            res.status(500);
+            res.send('error: telemetry server is down.');
+        });
+
+        // Server
+        const server = require('http').createServer(app);
+        server.listen(process.env.HTTP_PORT, () => {
+            console.log(`Server listening port ${process.env.HTTP_PORT}`);
+        });
     }
 }
 )();

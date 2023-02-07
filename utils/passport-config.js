@@ -12,13 +12,13 @@ import { getNewPassword } from './newUser';
  * @returns 
  */
 const localStrategy = async (username, password, done) => {
-    const users = await User.find({ NAME: username });
-    if (users.length == 0) {
-        return done(null, false, { message: 'User or password wrong!' });
-    }
-
     try {
+        const users = await User.find({ NAME: username });
 
+        if (users.length == 0) {
+            return done(null, false, { message: 'User or password wrong!' });
+        }
+        
         if (await bcrypt.compare(password, users[0].PASSWORD)) {
             users[0].PASSWORD = undefined;
             return done(null, users[0]);
