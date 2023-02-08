@@ -3,16 +3,19 @@ import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
 import { loadDbcFile, getCanNames, getActiveFileName, hexDataToPhysicalData, parseMessage as parse, getDecodingRulesFromDBC } from '../models/DBC.js';
-import Settings from '../apollo/models/settingsModel.js';
 
 
 const activateDBC = async () => {
     // use fs to read settings.conf
     fs.readFile(path.join(__dirname, '../settings.json'), 'utf8', async (err, data) => {
         try {
-
             if (err) {
-                throw err;
+                const settings = { ACTIVE_DBC: "" };
+                fs.writeFile(path.join(__dirname, '../settings.json'), JSON.stringify(settings), (err) => {
+                    if (err) throw err;
+                    console.log('[dbcFileCtrl] Settings file created');
+                });
+
             } else {
                 const settings = JSON.parse(data);
                 const loadedFile = await loadDbcFile(settings.ACTIVE_DBC);
@@ -62,6 +65,14 @@ const changeActiveFile = async (req, res) => {
         // update settings.json file
         fs.readFile(path.join(__dirname, '../settings.json'), 'utf8', async (err, data) => {
             if (err) {
+                // create settings.json file
+                const settings = { ACTIVE_DBC: fileName };
+
+                fs.writeFile(path.join(__dirname, '../settings.json'), JSON.stringify(settings), (err) => {
+                    if (err) throw err;
+                    console.log('[dbcFileCtrl] Settings file created');
+                });
+
                 throw err;
             } else {
                 const settings = JSON.parse(data);
